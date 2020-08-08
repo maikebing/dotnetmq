@@ -1,17 +1,19 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockApplication", "StockApplication\StockApplication.csproj", "{FFBE0873-B0E2-43D2-89B1-A27179FE5054}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockServer", "StockServer\StockServer.csproj", "{5CB63ED1-5B3B-4EDA-8148-6838329EF152}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockCommonLib", "StockCommonLib\StockCommonLib.csproj", "{050CB1CF-3528-4D61-A9F8-5359A9B72BF3}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30330.147
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{439FC8B6-B48E-437D-A5A1-919C39B85C2B}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\log4net.dll = Dependencies\log4net.dll
 		Dependencies\MDSCommonLib.dll = Dependencies\MDSCommonLib.dll
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockApplication", "StockApplication\StockApplication.csproj", "{FFBE0873-B0E2-43D2-89B1-A27179FE5054}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockServer", "StockServer\StockServer.csproj", "{5CB63ED1-5B3B-4EDA-8148-6838329EF152}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockCommonLib", "StockCommonLib\StockCommonLib.csproj", "{050CB1CF-3528-4D61-A9F8-5359A9B72BF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A8289C92-079C-42C5-AEA4-CECAA6002961}
 	EndGlobalSection
 EndGlobal

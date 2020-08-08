@@ -1,0 +1,3319 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetMQ</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetMQ.Communication.CommunicationLayer">
+            <summary>
+            Represents communication layer of MDS server. This class represents communicators as servers and applications
+            to upper layers.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.CommunicationLayer.Logger">
+            <summary>
+            Reference to logger.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.CommunicationLayer._settings">
+            <summary>
+            Reference to the settings.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.CommunicationLayer._remoteApplications">
+            <summary>
+            A collection that stores all remote applications.
+            key: ApplicationId
+            Total MDSRemoteApplication objects count is equal to
+            (MDSClientApplication count + MDSAdjacentServer count + 1 MDSController).
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.CommunicationLayer._communicationManagers">
+            <summary>
+            A collection that stores communication managers.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.CommunicationLayer._communicators">
+            <summary>
+            Temporary Communicator List. This list store a communicator until that communicator
+            registers to MDS server. After registration, it is removed from list.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.CommunicationLayer._lastApplicationId">
+            <summary>
+            Last generated application ID. This is used to get Unique ID for a RemoteApplication.
+            It is used by CreateApplicationId method.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.CommunicationLayer._lastCommunicatorId">
+            <summary>
+            Last generated communicator ID. When a new communicator builded, it gets 
+            _lastCommunicatorId+1 by calling CreateCommunicatorId() method.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.CreateApplicationId">
+            <summary>
+            Generates a Unique ID for Remote Applications.
+            </summary>
+            <returns>Unique ID</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.CreateCommunicatorId">
+            <summary>
+            Generates a Unique ID for communicators.
+            </summary>
+            <returns>Unique ID</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.Start">
+            <summary>
+            Starts the communication layer and all subsytems.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.Stop(System.Boolean)">
+            <summary>
+            Stops the communication layer and all subsytems.
+            </summary>
+            <param name="waitToStop">Indicates that caller thread must wait
+            until communication layer stops</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.WaitToStop">
+            <summary>
+            Waits until communication layer stops.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.AddRemoteApplication(DotNetMQ.Communication.MDSRemoteApplication)">
+            <summary>
+            Adds a remote application to communication layer.
+            </summary>
+            <param name="application">Remote application to add</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.RemoveRemoteApplication(DotNetMQ.Communication.MDSRemoteApplication)">
+            <summary>
+            Removes a remote application from communication layer.
+            </summary>
+            <param name="application">Remote application to remove</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.Manager_CommunicatorConnected(System.Object,DotNetMQ.Communication.Events.CommunicatorConnectedEventArgs)">
+            <summary>
+            When a communicator connects to server, this method is called.
+            </summary>
+            <param name="sender">Sender</param>
+            <param name="e">Event args</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.Communicator_MessageReceived(System.Object,DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs)">
+            <summary>
+            When a message received from a communicator, this method is called.
+            This method just process Register messages. After a register message received
+            from cummunicator, stops listen to events from this communicator anymore.
+            </summary>
+            <param name="sender">Sender (ICommunicator)</param>
+            <param name="e">Event args</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.ProcessRegisterMessage(DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSRegisterMessage)">
+            <summary>
+            Processes MDSRegisterMessage objects.
+            </summary>
+            <param name="communicator">Sender communicator of message</param>
+            <param name="message">Message</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.SendOperationResultMessage(DotNetMQ.Communication.ICommunicator,System.Boolean,System.String,System.String)">
+            <summary>
+            Sends a MDSOperationResultMessage message to a communicator.
+            </summary>
+            <param name="communicator">Communicator object</param>
+            <param name="success">Operation result</param>
+            <param name="resultText">Detailed result/error text</param>
+            <param name="repliedMessageId">The message id of request message</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.Communicator_StateChanged(System.Object,DotNetMQ.Communication.Events.CommunicatorStateChangedEventArgs)">
+            <summary>
+            When state of a communicator changes, this method handles event.
+            It is used to remove a communicator from list when it is closed.
+            </summary>
+            <param name="sender">Sender (ICommunicationManager)</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.AddToCommunicators(DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Adds a TCPCommunicator object to _communicators list.
+            </summary>
+            <param name="communicator">TCPCommunicator to be added</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.RemoveFromCommunicators(System.Int64)">
+            <summary>
+            Removes a TCPCommunicator object from _communicators list.
+            </summary>
+            <param name="comminicatorId">Id of TCPCommunicator to be removed</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.StopCommunicators(System.Boolean)">
+            <summary>
+            Stops all communicator connections.
+            </summary>
+            <param name="waitToStop">Indicates that caller thread waits stopping of communicators</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.ClearCommunicators(System.Boolean)">
+            <summary>
+            Removes all TCPCommunicator objects from _communicators list.
+            </summary>
+            <param name="waitToStop">Indicates that caller thread waits stop</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationLayer.WaitToStopOfCommunicators">
+            <summary>
+            Waits all communicators to stop.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Communication.CommunicationManagerBase">
+            <summary>
+            Base class for communicator managers.
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.CommunicationManagerBase.CommunicatorConnected">
+            <summary>
+            This event is raised when a communicator connection established.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationManagerBase.Start">
+            <summary>
+            Starts communication manager.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationManagerBase.Stop(System.Boolean)">
+            <summary>
+            Stops communication manager.
+            </summary>
+            <param name="waitToStop">Indicates that caller thread waits stopping of manager</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationManagerBase.WaitToStop">
+            <summary>
+            Waits stopping of communication manager.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicationManagerBase.OnCommunicatorConnected(DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Raises CommunicatorConnected event.
+            </summary>
+            <param name="communicator">Communicator</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.CommunicatorBase">
+            <summary>
+            This is the case class for all communicators.
+            A communicator can also be directly implement ICommunicator,
+            but this class helps to build a communicator class with several helper ana generic methods/properties. 
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.CommunicatorBase.StateChanged">
+            <summary>
+            This event is raised when the state of the communicator changes.
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.CommunicatorBase.MessageReceived">
+            <summary>
+            This event is raised when a MdsMessage received.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.CommunicatorBase.ComminicatorId">
+            <summary>
+             Unique identifier for this communicator.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.CommunicatorBase.CommunicationWay">
+            <summary>
+            Communication way for this communicator.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.CommunicatorBase.State">
+            <summary>
+            Connection state of communicator.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.CommunicatorBase._sendLock">
+            <summary>
+            Used to send only one message in a time by locking.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.#ctor(System.Int64)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="comminicatorId">Unique identifier for this communicator.</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.Start">
+            <summary>
+            Starts communication.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.Stop(System.Boolean)">
+            <summary>
+            Stops communication.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.SendMessage(DotNetMQ.Communication.Messages.MDSMessage)">
+            <summary>
+            Sends a message to the communicator.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.OnChangeState(DotNetMQ.Communication.CommunicationStates)">
+            <summary>
+            Changes the state of the communicator and raises event
+            </summary>
+            <param name="newState">New state</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.OnMessageReceived(DotNetMQ.Communication.Messages.MDSMessage)">
+            <summary>
+            When a MDSMessage received, this method is called from derived class.
+            </summary>
+            <param name="message">incoming message from communicator</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.StartCommunicaiton">
+            <summary>
+            Derived class must override this method to start the communication.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.StopCommunicaiton(System.Boolean)">
+            <summary>
+            Derived class must override this method to stop the communication.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.WaitToStop">
+            <summary>
+            Waits communicator to finish it's job.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.CommunicatorBase.SendMessageInternal(DotNetMQ.Communication.Messages.MDSMessage)">
+            <summary>
+            Derived class must override this method to send a message.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.CommunicatorConnectedHandler">
+            <summary>
+            A delegate to create events when a communicator connection established.
+            </summary>
+            <param name="sender">The object which raises event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.CommunicatorConnectedEventArgs">
+            <summary>
+            Stores communicator reference.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.Events.CommunicatorConnectedEventArgs.Communicator">
+            <summary>
+            Communicator.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.CommunicatorDisconnectedHandler">
+            <summary>
+            A delegate to create events when a communicator connection closed.
+            </summary>
+            <param name="sender">The object which raises event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.CommunicatorDisconnectedEventArgs">
+            <summary>
+            Stores communicator reference.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.Events.CommunicatorDisconnectedEventArgs.Communicator">
+            <summary>
+            Communicator.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.CommunicatorStateChangedHandler">
+            <summary>
+            A delegate to create events for changing state of a communicator.
+            </summary>
+            <param name="sender">The object which raises event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.CommunicatorStateChangedEventArgs">
+            <summary>
+            Stores informations about communicator and it's state.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.Events.CommunicatorStateChangedEventArgs.Communicator">
+            <summary>
+            Communicator.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.Events.CommunicatorStateChangedEventArgs.OldState">
+            <summary>
+            The state of the communicator before change.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorHandler">
+            <summary>
+            A delegate to create events when a message received from a communicator.
+            </summary>
+            <param name="sender">The object which raises event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs">
+            <summary>
+            Stores communicator and message informations.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs.Communicator">
+            <summary>
+            Communicator.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs.Message">
+            <summary>
+            Received message from communicator.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.MessageReceivedFromRemoteApplicationHandler">
+            <summary>
+            A delegate to create events when a message received from a remote application.
+            </summary>
+            <param name="sender">The object which raises event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.Events.MessageReceivedFromRemoteApplicationEventArgs">
+            <summary>
+            Stores informations about received message
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.Events.MessageReceivedFromRemoteApplicationEventArgs.Application">
+            <summary>
+            Remote Application.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.Events.MessageReceivedFromRemoteApplicationEventArgs.Communicator">
+            <summary>
+            Communicator.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.Events.MessageReceivedFromRemoteApplicationEventArgs.Message">
+            <summary>
+            Received message from communicator.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Communication.ICommunicationManager">
+            <summary>
+            This interface is implemented by communcation managers.
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.ICommunicationManager.CommunicatorConnected">
+            <summary>
+            This event is raised when a communicator is connected succesfully.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Communication.ICommunicator">
+            <summary>
+            Communicators is used by upper layers by this interface,
+            all communicator classes must implement it.
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.ICommunicator.StateChanged">
+            <summary>
+            This event is raised when the state of the communicator changes.
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.ICommunicator.MessageReceived">
+            <summary>
+            This event is raised when a MdsMessage received.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.ICommunicator.ComminicatorId">
+            <summary>
+             Unique identifier for this communicator in this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.ICommunicator.State">
+            <summary>
+            Connection state of communicator.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.ICommunicator.CommunicationWay">
+            <summary>
+            Communication way for this communicator.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.ICommunicator.SendMessage(DotNetMQ.Communication.Messages.MDSMessage)">
+            <summary>
+            Sends a message to the communicator.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:DotNetMQ.Communication.MDSRemoteApplication">
+            <summary>
+            This is a base class for remote application connected to the server as a MDSAdjacentServer,
+            MDSClientApplication or MDSController.
+            </summary>
+            <summary>
+            This file contains subclasses of MDSRemoteApplication.
+            It is created to reduce complexity of MDSRemoteApplication class.
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.MDSRemoteApplication.MessageReceived">
+            <summary>
+            This event is raised when a message is received from remote application.
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.MDSRemoteApplication.CommunicatorConnected">
+            <summary>
+            This event is raised when a new communicator connection established correctly.
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.MDSRemoteApplication.CommunicatorDisconnected">
+            <summary>
+            This event is raised when a communicator connection closed.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.Settings">
+            <summary>
+            Reference to settings.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.ApplicationId">
+            <summary>
+            An unique ID for this remote application in this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.Name">
+            <summary>
+            Name of the remote application
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.CommunicatorType">
+            <summary>
+            Communicator/Application Type for this remote application.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.LastIncomingMessageTime">
+            <summary>
+            Time of last message received from remote application.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.LastOutgoingMessageTime">
+            <summary>
+            Time of last message sent to remote application.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.LastAcknowledgedMessageId">
+            <summary>
+            MessageId of last received and acknowledged message's Id.
+            This field is used to do not receive/accept same message again.
+            If a message is send by this remote application with same MessageId,
+            message is discarded and ACK message is sent to application.
+            This field is set and used by OrganizationLayer. (Note: It is better to move this field another class in upper layer, because it is used by upper layer only.)
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.ConnectedCommunicatorCount">
+            <summary>
+            Gets connected (online) communicator count for this remote application.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.MDSRemoteApplication.Logger">
+            <summary>
+            Reference to logger.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.MaxAllowedCommunicatorCount">
+            <summary>
+            This field is used to determine maximum allowed communicator count.
+            No more communicator added if communicator count is equal to this number.
+            For infinit communicator, returns -1;
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.MDSRemoteApplication._communicators">
+            <summary>
+            The connected communication channels associated to this remote application
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.MDSRemoteApplication._incomingMessageQueue">
+            <summary>
+            This queue is used to queue MDSMessage objects received from remote application and process them sequentially.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.MDSRemoteApplication._messageDeliverer">
+            <summary>
+            This object is used to send/deliver messages to remote applications.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.MDSRemoteApplication._running">
+            <summary>
+            This flag is used to start/stop MessageDeliverer.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.#ctor(System.String,System.Int32)">
+            <summary>
+            Contructor.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.Start">
+            <summary>
+            Starts processing of incoming messages.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.Stop(System.Boolean)">
+            <summary>
+            Stops processing incoming messages
+            </summary>
+            <param name="waitToStop">True, to wait until stopped</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.WaitToStop">
+            <summary>
+            Waits until this object is stopped correctly.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.AddCommunicator(DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Adds a new communication channel for this application.
+            </summary>
+            <param name="communicator">new communicator</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.FindCommunicator(DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Searches throught _communicators list and checks if it contains a record with a spesified communicator object.
+            If it contains, returns the ConnectedCommunicator object, else returns null.
+            </summary>
+            <param name="communicator">Communicator object to search</param>
+            <returns>ConnectedCommunicator object, if _communicators contains communicator object</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.SendDataMessage(DotNetMQ.Communication.Messages.MDSDataTransferMessage,System.Int32)">
+            <summary>
+            This method is used to send a MDSDataTransferMessage to an available communicator of application.
+            It just blocks caller thread until a communicator comes available and message is sent or until timeout,
+            but receives result (ACK/Reject) message asynchronous. It sends result (ACK/Reject) message to OnResponseReceived() method.
+            </summary>
+            <param name="message">Message to send</param>
+            <param name="timeOut">Timeout value to wait if all receivers are busy. Set 0 to do not use timeout.</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.SendMessage(DotNetMQ.Communication.Messages.MDSMessage)">
+            <summary>
+            Sends a MDSMessage to this application.
+            This method does not block calling thread to wait an ACK for sending message.
+            This method is just an overload for SendMessage(MDSMessage, ICommunicator) method as communicator is null.
+            </summary>
+            <param name="message">outgoing message</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.SendMessage(DotNetMQ.Communication.Messages.MDSMessage,DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Sends a MDSMessage to a spesific communicator of this application.
+            This method does not block calling thread to wait an ACK for sending message.
+            If communicator is null, then it sends message first communicator of receiver communicators.
+            </summary>
+            <param name="message">outgoing message</param>
+            <param name="communicator">Communicator to send message (may be null)</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.WaitUntilReceiverCommunicatorConnected">
+            <summary>
+            This method is used to wait a thread until a receiver communicatior connection established.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.IsThereCommunicator">
+            <summary>
+            Checks if there is any connected communicator exists (at least 1 connected communicator).
+            </summary>
+            <returns>True, if there is one communicator at least</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.GetAllReceiverCommunicators">
+            <summary>
+            Gets a list of all connected receiver communicators.
+            </summary>
+            <returns>All receiver communicators</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.Communicator_StateChanged(System.Object,DotNetMQ.Communication.Events.CommunicatorStateChangedEventArgs)">
+            <summary>
+            When a communicator's state is changed, this method handles event..
+            </summary>
+            <param name="sender">Creator of event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.Communicator_MessageReceived(System.Object,DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs)">
+            <summary>
+            When a communicator is received a message, this method handles event..
+            </summary>
+            <param name="sender">Creator of event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.ProcessOperationResultMessage(DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs)">
+            <summary>
+            Processes a MDSOperationResultMessage message.
+            </summary>
+            <param name="e">Event arguments from Communicator_MessageReceived method</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.ProcessChangeCommunicationWayMessage(DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs)">
+            <summary>
+            Processes a MDSChangeCommunicationWayMessage message.
+            </summary>
+            <param name="e">Event arguments from Communicator_MessageReceived method</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.IncomingMessageQueue_ProcessItem(System.Object,DotNetMQ.Threading.ProcessQueueItemEventArgs{DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs})">
+            <summary>
+            This method is called for each incoming message by _incomingMessageQueue to process incoming messages as ordered.
+            </summary>
+            <param name="sender">Sender object</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.StartCommunicators">
+            <summary>
+            This method is used to start static communicators (like Web Service communicators).
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.StopCommunicators">
+            <summary>
+            This method is used to stop communicators that are not first connected to this server but this server opened connection to them.
+            It also stops web service communicators.
+            Because they are not contained in Communication layer, connection between them is closed by this method.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.OnMessageReceived(System.Object,DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs)">
+            <summary>
+            Raises a MessageReceived event.
+            </summary>
+            <param name="sender">Creator of event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.OnCommunicatorConnected(DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Raises a CommunicatorConnected event.
+            </summary>
+            <param name="communicator">New connected communicator</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.OnCommunicatorDisconnected(DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Raises a CommunicatorConnected event.
+            </summary>
+            <param name="communicator">New connected communicator</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer">
+            <summary>
+            This class is used to deliver messages to remote application.
+            It is designed to seperate message sending/delivering process from other processes of MDSRemoteApplication class.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer._remoteApplication">
+            <summary>
+            Reference to the MDSRemoteApplication object that is used with this MessageDeliverer.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer._asynchronMessageControlTimer">
+            <summary>
+            This Timer is used to check if a ACK/Reject timeout occured for a message.
+            Normally, when a communicator disconnected, if it was processing a message but not acknowledged yet,
+            the message is turns back to the queue to be sent to another communicator (see RemoveReceiver method).
+            But sometimes a communicator that processing messages may crash and can not send TCP close signal, so communicator may be supposed running..
+            In this situation this timer periodically checks if a certain time passed but not ACK/Reject received from a communicator.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.#ctor(DotNetMQ.Communication.MDSRemoteApplication)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="remoteApplication">Reference to the MDSRemoteApplication object that is used with this MessageDeliverer</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.Start">
+            <summary>
+            Starts MessageDeliverer.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.Stop(System.Boolean)">
+            <summary>
+            Stops MessageDeliverer.
+            </summary>
+            <param name="waitToStop">Wait stopping of MessageDeliverer</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.WaitToStop">
+            <summary>
+            Waits stopping of MessageDeliverer.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.SendDataMessage(DotNetMQ.Communication.Messages.MDSDataTransferMessage,System.Int32)">
+            <summary>
+            This method is used to send a MDSDataTransferMessage to an available communicator of application.
+            It just blocks caller thread until a communicator comes available and message is sent or until timeout,
+            but receives result (ACK/Reject) message asynchronous. It sends result (ACK/Reject) message to OnResponseReceived() method.
+            </summary>
+            <param name="message">Message to send</param>
+            <param name="timeOut">Timeout value to wait if all receivers are busy. Set 0 to do not use timeout.</param>
+            <returns>True, if message sent to communicator.</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.SendMessage(DotNetMQ.Communication.Messages.MDSMessage,DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Sends a MDSMessage to a spesific communicator of this application.
+            This method does not block calling thread to wait an ACK for sending message.
+            If communicator is null, then it sends message first communicator of receiver communicators.
+            </summary>
+            <param name="message">outgoing message</param>
+            <param name="communicator">Communicator to send message (may be null)</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.HandleOperationResultMessage(DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs)">
+            <summary>
+            This method is used to get MDSOperationResultMessage objects (ACK/Reject messages) by MessageDeliverer class.
+            It is called by MDSRemoteApplication's Communicator_MessageReceived method.
+            </summary>
+            <param name="e">Event arguments from Communicator_MessageReceived method</param>
+            <returns>True, if message is handled by this method</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.IsThereAnyReceiver">
+            <summary>
+            This method is used to know if any receiver exists.
+            </summary>
+            <returns>True, if at least one receiver connected</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.AsynchronMessageControlTimer_Elapsed(System.Object)">
+            <summary>
+            This method is called by _asynchronMessageControlTimer periodically.
+            See definition of _asynchronMessageControlTimer object.
+            </summary>
+            <param name="state">Not used argument</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.GetFreeReceiverCommunicator(System.Int64)">
+            <summary>
+            Gets a free Receiver Communicator if exists, else returns null.
+            </summary>
+            <param name="communicatorId">
+            Communicator's Id to get. 
+            If it is smaller or equal to 0, returns any available communicator.
+            </param>
+            <returns>Free receiver communicator</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.GetAnyReceiverCommunicator">
+            <summary>
+            Gets any Receiver Communicator. It does not metter wheter it is busy or free.
+            </summary>
+            <returns>A receiver communicator</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.MessageDeliverer.SetLeavingTime(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Sets Leaving time for last passed server (this server) of message.
+            </summary>
+            <param name="message">Message object</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.MDSRemoteApplication.ConnectedCommunicator">
+            <summary>
+            This class is used to store connected communicators of this applications and their states/activities.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.ConnectedCommunicator.Communicator">
+            <summary>
+            Reference to the communicator object.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.ConnectedCommunicator.ProcessingMessage">
+            <summary>
+            If this communicator is processing a message (that means a message is sent to this communicator and response (ACK/Reject) message is not received yet)
+            this field stores a reference to that message. This indicates that the communicator is busy, so we do not send and message if it is busy.
+            If this field is null that means the communicator is free and can receive messages, so we can send messages to it.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.ConnectedCommunicator.ProcessingMessageExpireDate">
+            <summary>
+            Indicates when the ProcessingMessage is assumed to rejected (not acknowledged) by communicator if any ACK/Reject is received.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.ConnectedCommunicator.IsSuspended">
+            <summary>
+            If a communicator rejects a message, it is suspended for a while.
+            This value is true, if communicator is suspended now.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.MDSRemoteApplication.ConnectedCommunicator.SuspendExpireDate">
+            <summary>
+            If IsSuspended is true, this value is the expire date of suspend state.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.MDSRemoteApplication.ConnectedCommunicator.#ctor(DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Creates a new ReceiverCommunicator object.
+            </summary>
+            <param name="communicator">The communicator</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.TCPCommunication.TCPClientConnectedHandler">
+            <summary>
+            A delegate to create events for connected TCP clients to this server.
+            </summary>
+            <param name="sender">The object which raises event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.TCPCommunication.TCPClientConnectedEventArgs">
+            <summary>
+            Stores informations about connected client.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.TCPCommunication.TCPClientConnectedEventArgs.ClientSocket">
+            <summary>
+            Client Socket Connection
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Communication.TCPCommunication.TCPCommunicationManager">
+            <summary>
+            A communication manager that listens and handles incoming connections and messages using TCP.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPCommunicationManager.Logger">
+            <summary>
+            Reference to logger
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPCommunicationManager._connectionListener">
+            <summary>
+            The object to listen and handle incoming connection requests.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicationManager.#ctor(System.Int32)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="port">Server's listening TCP port number</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicationManager.Start">
+            <summary>
+            Starts listening of port and handling connections.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicationManager.Stop(System.Boolean)">
+            <summary>
+            Stops listening of port and handling connections. 
+            Closes all open communicator connection.
+            </summary>
+            <param name="waitToStop">Indicates that caller thread waits stopping of manager</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicationManager.WaitToStop">
+            <summary>
+            Waits stopping of communication manager. 
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicationManager.ConnectionListener_ClientConnected(System.Object,DotNetMQ.Communication.TCPCommunication.TCPClientConnectedEventArgs)">
+            <summary>
+            When TCPConnectionListener handles a connection, it is taken by this method to create and 
+            register it's neccessary events and to add it to _communicators collection. 
+            This method is also starts the communicator.
+            </summary>
+            <param name="sender">Sending object</param>
+            <param name="e">Event informations</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.TCPCommunication.TCPCommunicator">
+            <summary>
+            This class represents an communication channel with a Remote Application via TCP sockets.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPCommunicator.Logger">
+            <summary>
+            Reference to logger
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPCommunicator._socket">
+            <summary>
+            The TCP socket to the remote application.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPCommunicator._networkStream">
+            <summary>
+            The main stream wraps socket to send/receive data.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPCommunicator._wireProtocol">
+            <summary>
+            This object is used to send/receive messages as byte array.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPCommunicator._thread">
+            <summary>
+            The thread that listens incoming data.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicator.#ctor(System.Net.Sockets.Socket,System.Int64)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="socket">Open TCP socket connection to the communicator.</param>
+            <param name="comminicatorId">Unique identifier for this communicator.</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicator.WaitToStop">
+            <summary>
+            Waits communicator to stop.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicator.StartCommunicaiton">
+            <summary>
+            Prepares communication objects and starts data listening thread.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicator.StopCommunicaiton(System.Boolean)">
+            <summary>
+            Closes the socket and stops the thread.
+            </summary>
+            <param name="waitToStop">True, to block caller thread until this object stops</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicator.SendMessageInternal(DotNetMQ.Communication.Messages.MDSMessage)">
+            <summary>
+            Sends a message to the TCP communicator according Communication type
+            </summary>
+            <param name="message">Message to send</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicator.DoCommunicateAsThread">
+            <summary>
+            Entrance point of the thread.
+            This method run by thread to listen incoming data from communicator.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPCommunicator.SendMessageToSocket(DotNetMQ.Communication.Messages.MDSMessage)">
+            <summary>
+            Sends MDSMessage object to the socket.
+            </summary>
+            <param name="message">Message to be sent</param>
+        </member>
+        <member name="T:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener">
+            <summary>
+            This class is used to listen and accept incoming TCP connection requests on given TCP port.
+            </summary>
+        </member>
+        <member name="E:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.TCPClientConnected">
+            <summary>
+            When a client successfully connected the server, this event is raised.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.Port">
+            <summary>
+            Listening port number
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.Logger">
+            <summary>
+            Reference to logger
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener._listenerSocket">
+            <summary>
+            Server socket to listen incoming connection requests.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener._thread">
+            <summary>
+            The thread to listen socket
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener._running">
+            <summary>
+            A flag to control thread's running
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.#ctor(System.Int32)">
+            <summary>
+            Creates a new TCPConnectionListener with given tcp port.
+            </summary>
+            <param name="port">Listening TCP port no</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.Start">
+            <summary>
+            Starts listening.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.Stop(System.Boolean)">
+            <summary>
+            Stops listening.
+            </summary>
+            <param name="waitToStop">True, if caller method must wait until running stops.</param>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.WaitToStop">
+            <summary>
+            Waits until listener finishes it's work, if it is working.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.StartSocket">
+            <summary>
+            Starts listening socket.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.StopSocket">
+            <summary>
+            Stops listening socket.
+            </summary>
+            <returns>Indicates the result of operation</returns>
+        </member>
+        <member name="M:DotNetMQ.Communication.TCPCommunication.TCPConnectionListener.DoListenAsThread">
+            <summary>
+            Entrance point of the thread.
+            This method is used by the thread to listen incoming requests.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Controllers.AccountController.Register(DotNetMQ.Dtos.RegisterDto)">
+            <summary>
+            Register a user
+            </summary>
+            <param name="model"></param>
+            <returns ></returns>
+        </member>
+        <member name="T:DotNetMQ.Organization.MDSAdjacentServer">
+            <summary>
+            An MDSAsjacentServer is a server in MDSServerGraph that is an adjacent of this server
+            and directly communicates with this server. 
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSAdjacentServer.IpAddress">
+            <summary>
+            IP Address of Server on network
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSAdjacentServer.Port">
+            <summary>
+            Listening port number of MDS on Server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSAdjacentServer.CommunicatorType">
+            <summary>
+            Communicator Type for MDS server
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSAdjacentServer.MaxAllowedCommunicatorCount">
+            <summary>
+            This field is used to determine maximum allowed communicator count.
+            No more communicator added if communicator count is equal to this number.
+            For infinit communicator, returns -1;
+            
+            Only 1 communicator is allowed in any time for a MDSAdjacentServer.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSAdjacentServer._lastConnectionAttemptTime">
+            <summary>
+            The time last connection attempt to remote MDS server.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSAdjacentServer._connectionErrorCount">
+            <summary>
+            Consecutive error count on trying to connect to remote MDS server.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSAdjacentServer._reconnectingCommunicator">
+            <summary>
+            This communicator object is temporary used to reconnect to remote MDS server.
+            After connection it is added to communicators list and set to null.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSAdjacentServer.#ctor(System.String,System.String,System.Int32)">
+            <summary>
+            Constructur.
+            </summary>
+            <param name="name">name of server</param>
+            <param name="ipAddress">IP Address of server</param>
+            <param name="port">Listening TCP port of server</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSAdjacentServer.CheckConnection">
+            <summary>
+            This method is responsible to ensure connection with communicating MDS server.
+            Checks connection, reconnects if disconnected and sends ping message.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSAdjacentServer.GetWaitingMessages(System.Int32,System.Int32)">
+            <summary>
+            Gets messages from database to be sent to this server.
+            </summary>
+            <param name="minId">Minimum Id of message record to get (minId included)</param>
+            <param name="maxCount">Maximum number of records to get</param>
+            <returns>List of messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSAdjacentServer.GetMaxWaitingMessageId">
+            <summary>
+            Gets Id of last incoming message that will be sent to this server.
+            </summary>
+            <returns>Id of last incoming message</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSAdjacentServer.GetNextServerForMessage(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Finds Next server for a message.
+            </summary>
+            <returns>Next server</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSAdjacentServer.CheckConnectionAndReConnectIfNeeded">
+            <summary>
+            Checks connection and reconnects to MDS server if needed.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSAdjacentServer.SendPingMessageIfNeeded">
+            <summary>
+            Sends a Ping message to MDS server if 60 seconds passed after last communication.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSAdjacentServer.ConnectToServer">
+            <summary>
+            Creates a new TCPCommunicator to communicate with MDS server.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSAdjacentServer.Communicator_MessageReceived(System.Object,DotNetMQ.Communication.Events.MessageReceivedFromCommunicatorEventArgs)">
+            <summary>
+            This method is just used to make a new connection with MDS server.
+            It receives response of register message and adds communicator to Communicators if successfuly registered.
+            </summary>
+            <param name="sender">Creator object of event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="T:DotNetMQ.Organization.MDSClientApplication">
+            <summary>
+            Represents a Client Application that can send and received messages to/from this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSClientApplication.CommunicatorType">
+            <summary>
+            Communicator type for Client applications.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSClientApplication.#ctor(System.String)">
+            <summary>
+            Creates a new MDSClientApplication.
+            </summary>
+            <param name="name">Unique name of the application</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSClientApplication.GetWaitingMessages(System.Int32,System.Int32)">
+            <summary>
+            Gets messages from database to be sent to this application.
+            </summary>
+            <param name="minId">Minimum Id of message record to get (minId included)</param>
+            <param name="maxCount">Maximum number of records to get</param>
+            <returns>List of messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSClientApplication.GetMaxWaitingMessageId">
+            <summary>
+            Gets Id of last incoming message that will be sent to this application.
+            </summary>
+            <returns>Id of last incoming message</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSClientApplication.GetNextServerForMessage(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Finds Next server for a message.
+            </summary>
+            <returns>Next server</returns>
+        </member>
+        <member name="T:DotNetMQ.Organization.MDSClientApplicationList">
+            <summary>
+            All Client applications that can send/receive messages to/from this MDS server are stored in this class.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSClientApplicationList.Applications">
+            <summary>
+            A collection that stores client applications.
+            MDSClientApplication objects count is equals to total application definition in Settings file.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSClientApplicationList._settings">
+            <summary>
+            Reference to settings.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSClientApplicationList.#ctor">
+            <summary>
+            Contructor. Gets applications from given settings file.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSClientApplicationList.CreateApplicationList">
+            <summary>
+            Reads the xml file and creates client applications using _settings.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Organization.MDSController">
+            <summary>
+            Represents a MDS controller that can monitor/manage to this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSController.CommunicatorType">
+            <summary>
+            Communicator type for Controllers.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSController.OrganizationLayer">
+            <summary>
+            Reference to Organization Layer.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSController._settings">
+            <summary>
+            Reference to Settings.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSController._designSettings">
+            <summary>
+            Reference to Design Settings.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.#ctor(System.String)">
+            <summary>
+            Creates a new MDSController object.
+            </summary>
+            <param name="name">Name of the controller</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.MDSController_MessageReceived(System.Object,DotNetMQ.Communication.Events.MessageReceivedFromRemoteApplicationEventArgs)">
+            <summary>
+            Handles MessageReceived event.
+            All messages received from all controllers comes to this method.
+            </summary>
+            <param name="sender">Sender object</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.ProcessControllerMessage(DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSControllerMessage,DotNetMQ.Communication.Messages.ControllerMessages.ControlMessage)">
+            <summary>
+            This methods checks type of message (MessageTypeId) and calls appropriate method to process message.
+            </summary>
+            <param name="communicator">Communicator that sent message</param>
+            <param name="controllerMessage">MDSControllerMessage object that includes controlMessage</param>
+            <param name="controlMessage">The message to be processed</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.ProcessGetApplicationListMessage(DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSControllerMessage)">
+            <summary>
+            Processes GetApplicationListMessage.
+            </summary>
+            <param name="communicator">Communicator that sent message</param>
+            <param name="controllerMessage">MDSControllerMessage object that includes controlMessage</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.ProcessAddNewApplicationMessage(DotNetMQ.Communication.Messages.ControllerMessages.AddNewApplicationMessage)">
+            <summary>
+            Processes AddNewApplicationMessage.
+            </summary>
+            <param name="controlMessage">The message to be processed</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.ProcessRemoveApplicationMessage(DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.ControllerMessages.RemoveApplicationMessage,DotNetMQ.Communication.Messages.MDSControllerMessage)">
+            <summary>
+            Processes RemoveApplicationMessage.
+            </summary>
+            <param name="communicator">Communicator that sent message</param>
+            <param name="controlMessage">The message to be processed</param>
+            <param name="controllerMessage">MDSControllerMessage object that includes controlMessage</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.ProcessGetServerGraphMessage(DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSControllerMessage)">
+            <summary>
+            Processes GetServerGraphMessage.
+            </summary>
+            <param name="communicator">Communicator that sent message</param>
+            <param name="controllerMessage">MDSControllerMessage object that includes controlMessage</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.ProcessUpdateServerGraphMessage(DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.ControllerMessages.UpdateServerGraphMessage,DotNetMQ.Communication.Messages.MDSControllerMessage)">
+            <summary>
+            Processes UpdateServerGraphMessage.
+            </summary>
+            <param name="communicator">Communicator that sent message</param>
+            <param name="controlMessage">The message to be processed</param>
+            <param name="controllerMessage">MDSControllerMessage object that includes controlMessage</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.ClientApplication_CommunicatorConnected(System.Object,DotNetMQ.Communication.Events.CommunicatorConnectedEventArgs)">
+            <summary>
+            Handles CommunicatorConnected event of all client applications.
+            </summary>
+            <param name="sender">Creates of event (application)</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.ClientApplication_CommunicatorDisconnected(System.Object,DotNetMQ.Communication.Events.CommunicatorDisconnectedEventArgs)">
+            <summary>
+            Handles CommunicatorDisconnected event of all client applications.
+            </summary>
+            <param name="sender">Creates of event (application)</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.SendMessageToAllReceivers(DotNetMQ.Communication.Messages.ControllerMessages.ControlMessage)">
+            <summary>
+            Sends a ControlMessage to all connected MDSController instances.
+            </summary>
+            <param name="message">Message to send</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSController.ReplyMessageToCommunicator(DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.ControllerMessages.ControlMessage,DotNetMQ.Communication.Messages.MDSControllerMessage)">
+            <summary>
+            Sends a message to a spesific communicator as a reply to an incoming message.
+            </summary>
+            <param name="communicator">Communicator to send message</param>
+            <param name="message">Message to send</param>
+            <param name="incomingMessage">Incoming message which is being replied</param>
+        </member>
+        <member name="T:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase">
+            <summary>
+            This class extends MDSRemoteApplication, adds functionality to send/receive persistent messages.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.MaxMessagesInQueue">
+            <summary>
+            Maximum message count can be stored in _waitingMessages.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.MinMessageCountToGetFromDatabase">
+            <summary>
+            If message count in _waitingMessages decrees under this count and there are new messages on database, new messages are received to queue.
+            This value must be smaller (or equal but not recommended) than MaxMessagesInQueue.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.FirstWaitingTimeOnError">
+            <summary>
+            In an database, network... error, thread first waits FirstWaitingTimeOnError milliseconds before next try.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.MaxWaitingTimeOnError">
+            <summary>
+            In a database, network... error, thread maximum waits MaxWaitingTimeOnError milliseconds before next try.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.StorageManager">
+            <summary>
+            Reference to the Store manager in MDS server.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase._waitingMessages">
+            <summary>
+            Waiting message list that contains cached messages to be sent to this remote application.
+            New messages are inserted to storage manager (database) and also added to this queue. Thus, when message is sent to remote application,
+            it is gooten from this queue instead of database. This improves performance.
+            When this list has item less than MinMessageCountToGetFromDatabase and database has messages, the list is filled from database.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase._biggestWaitingMessageId">
+            <summary>
+            Biggest Id in database that is waiting to be sent to this remote application.
+            If no records exists, this is last sent message's Id.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase._biggestWaitingMessageIdInList">
+            <summary>
+            Biggest Id in _waitingMessages (Last item's Id).
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase._waitingMessageProcessThread">
+            <summary>
+            Runs on ProcessWaitingMessageRecordsAsThread method.
+            Used to process messages in _waitingMessages.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase._waitingMessageProcessRunning">
+            <summary>
+            Indicates that _waitingMessageProcessThread is running or not.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase._waitingTimeOnError">
+            <summary>
+            Waiting time on an error situation.
+            It is used with FirstWaitingTimeOnError and MaxWaitingTimeOnError to wait before next try when an error occured.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase._waitingForAnError">
+            <summary>
+            This is true if _waitingMessageProcessThread is waiting because of an error situation.
+            In this case, it can not be pulsed and waits to finish it's timeout (except service is stopping).
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.#ctor(System.String)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="name">Name of the remote application</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.Start">
+            <summary>
+            Starts this remote application.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.Stop(System.Boolean)">
+            <summary>
+            Stops this remote application.
+            </summary>
+            <param name="waitToStop">This is set to true if called thread wants to wait until this application completely stops</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitToStop">
+            <summary>
+            Waits until this application completely stops.
+            No action if it is already stopped.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.EnqueueMessage(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            This method is called when a MDSDataTransferMessage sent to this application.
+            Stores message and adds to queue to send to remote application.
+            </summary>
+            <param name="message">Message</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.AddMessageToHeadOfQueue(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            This method is called when a MDSDataTransferMessage sent to this application.
+            It does not store message, adds it as first item of sending queue.
+            </summary>
+            <param name="message">Message</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.OnResponseReceived(DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSOperationResultMessage)">
+            <summary>
+            This method handles ACK/Reject messages from remote application for a data transfer message.
+            </summary>
+            <param name="communicator">Communicator that sent message</param>
+            <param name="operationResultMessage">Response message</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.ProcessWaitingMessageRecordsAsThread">
+            <summary>
+            This method is run by _waitingMessageProcessThread and ensures persistence with EnqueueMessage method.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.ProcessWaitingMessageRecords">
+            <summary>
+            This is the main method that is called in ProcessWaitingMessageRecordsAsThread method.
+            In basic, it gets a record from queue/database and sends it to the remote application.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.GetFirstReadyMessageToSend">
+            <summary>
+            Gets a message from _waitingMessages that is ready to send (not processing by a communicator and waiting for ACK). 
+            </summary>
+            <returns>A message that is ready to send. Returns null if there is no message to send</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.GetMessagesFromDatabaseIfNeeded">
+            <summary>
+            Gets messages from database if needed.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.ProcessWaitingMessage(DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitingMessage)">
+            <summary>
+            Process one MDSMessageRecord from queue.
+            Called by ProcessWaitingMessageRecords method for each message.
+            If waitingMessage.MessageRecord.Id > 0 that means the message is asyncronous (added to queue with EnqueueMessage and stored to database),
+            else the message is syncronous (added to queue with AddMessageToHeadOfQueue method).
+            Asyncronous messages will be tried again and again until it is delivered, 
+            but syncronsous messages is tried only one time to send, because sender application waits response for it.
+            </summary>
+            <param name="waitingMessage">Message to process</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.EvaluateResponse(DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSOperationResultMessage,DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitingMessage)">
+            <summary>
+            This method evaluates ACK/Reject messages from remote application for a data transfer message.
+            </summary>
+            <param name="communicator">Communicator that sent message</param>
+            <param name="operationResultMessage">Response message</param>
+            <param name="waitingMessage">Waiting message for this response (may be null, if it is null, it is searched in _waitingMessages list)</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitOnError">
+            <summary>
+            Stops _waitingMessageProcessThread thread for a while on an error situation.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.GetWaitingMessages(System.Int32,System.Int32)">
+            <summary>
+            Gets messages from database to be sent to this remote application.
+            </summary>
+            <param name="minId">Minimum Id of message record to get (minId included)</param>
+            <param name="maxCount">Maximum number of records to get</param>
+            <returns>List of messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.GetMaxWaitingMessageId">
+            <summary>
+            Gets Id of last incoming message that will be sent to this remote application.
+            </summary>
+            <returns>Id of last incoming message</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.GetNextServerForMessage(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Finds Next server for a message.
+            This method is designed, because it is different to get next server's name for client applications and mds servers.
+            </summary>
+            <returns>Next server</returns>
+        </member>
+        <member name="T:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitingMessage">
+            <summary>
+            This class represents a message in _waitingMessages list.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitingMessage.MessageRecord">
+            <summary>
+            Message record in storage manager.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitingMessage.State">
+            <summary>
+            State of the message.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitingMessage.WaitingMessageStates">
+            <summary>
+            States of a messages.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitingMessage.WaitingMessageStates.ReadyToSend">
+            <summary>
+            This message is waiting to be sent to remote application.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitingMessage.WaitingMessageStates.WaitingForAcknowledgment">
+            <summary>
+            This message is sent to remote application and waiting an ACK message to be removed from _waitingMessages list.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSPersistentRemoteApplicationBase.WaitingMessage.#ctor(DotNetMQ.Storage.MDSMessageRecord)">
+            <summary>
+            Creates a new WaitingMessage object.
+            </summary>
+            <param name="messageRecord">Message record in storage manager</param>
+        </member>
+        <member name="T:DotNetMQ.Organization.MDSServerGraph">
+            <summary>
+            Represents all servers on network as a graph.
+            And also stores references to all communicating adjacent servers.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSServerGraph.ThisServerNode">
+            <summary>
+            Gets this (current) server node.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSServerGraph.ServerNodes">
+            <summary>
+            All server nodes on network.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSServerGraph.AdjacentServers">
+            <summary>
+            A collection that stores communicating adjacent MDS servers to this MDS server.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSServerGraph.Logger">
+            <summary>
+            Reference to logger.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSServerGraph._settings">
+            <summary>
+            Reference to settings.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSServerGraph._pingTimer">
+            <summary>
+            This Timer is used to check mds server connections,
+            send ping messages and reconnect if needed.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.MDSServerGraph._running">
+            <summary>
+            This flag is used to start/stop _pingTimer.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.#ctor">
+            <summary>
+            Contructor.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.GetNextServersForDestServers">
+            <summary>
+            Calculates all next (adjacent) servers for all destination servers. 
+            </summary>
+            <returns>
+            List of "Destination server name - Next server name" pairs.
+            For example:
+            If path is "ThisServer - ServerB - ServerC" than Destination server is ServerC and NextServer is ServerB.
+            </returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.CreateGraph">
+            <summary>
+            Creates graph according to settings.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.CreateServerNodes">
+            <summary>
+            Creates ServerNodes list from _settings.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.JoinNodes">
+            <summary>
+            Gets adjacent nodes from settings and joins servers in ServerNodes.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.SetCurrentServer">
+            <summary>
+            Sets ThisServerNode field according to _settings and ServerNodes
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.CreateAdjacentServers">
+            <summary>
+            Fills AdjacentServers collection according to settings.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.CalculateShortestPaths">
+            <summary>
+            Calculates all shorted paths from all nodes to other nodes.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.FindShortestPath(DotNetMQ.Organization.MDSServerNode,DotNetMQ.Organization.MDSServerNode)">
+            <summary>
+            Find one of the shortest paths from given source node to destination node.
+            </summary>
+            <param name="sourceServerNode">Source node</param>
+            <param name="destServerNode">Destination node</param>
+            <returns>A path from source to destination</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.FindPaths(DotNetMQ.Organization.MDSServerNode,DotNetMQ.Organization.MDSServerNode,System.Collections.Generic.ICollection{System.Collections.Generic.List{DotNetMQ.Organization.MDSServerNode}},System.Collections.Generic.ICollection{DotNetMQ.Organization.MDSServerNode})">
+            <summary>
+            Finds all the paths from currentServerNode to destServerNode as a recursive method.
+            Passes all nodes, if destination node found, it is added to paths
+            </summary>
+            <param name="currentServerNode">Current server node</param>
+            <param name="destServerNode">Destination server node</param>
+            <param name="paths">All possible paths are inserted to this list</param>
+            <param name="passedNodes"></param>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerGraph.PingTimer_Elapsed(System.Object)">
+            <summary>
+            This method is called by _pingTimer periodically.
+            </summary>
+            <param name="state">Not used argument</param>
+        </member>
+        <member name="T:DotNetMQ.Organization.MDSServerNode">
+            <summary>
+            Represents a MDS server on network.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSServerNode.Name">
+            <summary>
+            Name of the remote application
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSServerNode.Adjacents">
+            <summary>
+            Adjacent server nodes of this node.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.MDSServerNode.BestPathsToServers">
+            <summary>
+            Stores best paths to the all server nodes from this node
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.MDSServerNode.#ctor(System.String)">
+            <summary>
+            Constructur.
+            </summary>
+            <param name="name">name of server</param>
+        </member>
+        <member name="T:DotNetMQ.Organization.OrganizationLayer">
+            <summary>
+            This class represents organization layer of MDS Server. It handles, stores, routes and delivers messages.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.OrganizationLayer.Logger">
+            <summary>
+            Reference to logger.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.OrganizationLayer._settings">
+            <summary>
+            Reference to settings.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.OrganizationLayer._communicationLayer">
+            <summary>
+            Reference to communication layer.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.OrganizationLayer._storageManager">
+            <summary>
+            Reference to storage manager.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.OrganizationLayer._routingTable">
+            <summary>
+            Routing table.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.OrganizationLayer._serverGraph">
+            <summary>
+            Reference to server graph.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.OrganizationLayer._clientApplicationList">
+            <summary>
+            Reference to application list.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.OrganizationLayer._mdsManager">
+            <summary>
+            Reference to all MDS Manager. It contains communicators to all instances of MDS manager.
+            So, there is only one MDSController object in MDS.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.OrganizationLayer._waitingMessages">
+            <summary>
+            This collection is used to send message and get response in SendMessageDirectly method.
+            SendMessageDirectly method must wait until response received. It waits using this collection.
+            Key: Message ID to wait response.
+            Value: ManualResetEvent to wait thread until response received.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.#ctor(DotNetMQ.Communication.CommunicationLayer,DotNetMQ.Storage.IStorageManager,DotNetMQ.Organization.Routing.RoutingTable,DotNetMQ.Organization.MDSServerGraph,DotNetMQ.Organization.MDSClientApplicationList,DotNetMQ.Organization.MDSController)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="communicationLayer">Reference to the Communication Layer</param>
+            <param name="storageManager">Reference to the Storage Manager</param>
+            <param name="routingTable">Reference to the routing table</param>
+            <param name="serverGraph">Reference to server graph</param>
+            <param name="clientApplicationList">Reference to application list</param>
+            <param name="mdsManager">Reference to MDS Manager object</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.Start">
+            <summary>
+            Starts the organization layer.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.Stop(System.Boolean)">
+            <summary>
+            Stops the organization layer.
+            </summary>
+            <param name="waitToStop">True, if caller thread must be blocked until organization layer stops.</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.WaitToStop">
+            <summary>
+            Waits to stop of organization layer.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.GetClientApplications">
+            <summary>
+            Gets a list of all client applications as an array.
+            </summary>
+            <returns>Client applications array</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.AddApplication(System.String)">
+            <summary>
+            This method is used to add a new client application to MDS while MDS is running.
+            Used by MDSController to allow user to add a new application from MDSManager GUI.
+            It does all necessary tasks to add new application (Updates XML file, adds application to needed
+            collections of system...).
+            </summary>
+            <param name="name">Name of the new application</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.RemoveApplication(System.String)">
+            <summary>
+            This method is used to delete a client application from MDS while MDS is running.
+            Used by MDSController to allow user to remove an application from MDSManager GUI.
+            It does all necessary tasks to remove application (Updates XML file, removes application from needed
+            collections of system...).
+            </summary>
+            <param name="name">Name of the application to remove</param>
+            <returns>Removed client application</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.PrepareCommunicationLayer">
+            <summary>
+            Adds server and applications to communication layer and registers their MessageReceived events.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.RemoteApplication_MessageReceived(System.Object,DotNetMQ.Communication.Events.MessageReceivedFromRemoteApplicationEventArgs)">
+            <summary>
+            This method is handles all adjacent server's and client application's MessageReceived events.
+            </summary>
+            <param name="sender">Creator of event</param>
+            <param name="e">Event arguments</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.ProcessDataTransferMessage(DotNetMQ.Communication.MDSRemoteApplication,DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            This method is used to process a MDSDataTransferMessage that is gotten from a mds server or client application.
+            Message is sent to destination or next server in one of these three conditions:
+            - Destination server is this server and application exists on this server
+            - Destination server is an adjacent server of this server
+            - Destination server in server graph and there is a path from this server to destination server
+            </summary>
+            <param name="senderApplication">Sender application/server</param>
+            <param name="senderCommunicator">Sender communicator</param>
+            <param name="message">Message</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.AddThisServerToPassedServerList(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Adds this server to the list of passed servers of message.
+            </summary>
+            <param name="message">Message object</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.FillEmptyMessageFields(DotNetMQ.Communication.Messages.MDSDataTransferMessage,DotNetMQ.Communication.MDSRemoteApplication,DotNetMQ.Communication.ICommunicator)">
+            <summary>
+            Checks a MDSDataTransferMessage and fills it's empty fields by default values.
+            </summary>
+            <param name="dataTransferMessage">Message</param>
+            <param name="senderApplication">Sender application</param>
+            <param name="communicator">Sender communicator of application</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.SentToClientApplication(DotNetMQ.Communication.MDSRemoteApplication,DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            This method is called by ProcessDataTransferMessage when a message must be sent to a aclient application
+            that is running on this server.
+            </summary>
+            <param name="senderApplication">Sender application/server</param>
+            <param name="senderCommunicator">Sender communicator</param>
+            <param name="message">Message</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.SentToAdjacentServer(DotNetMQ.Communication.MDSRemoteApplication,DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            This method is called by ProcessDataTransferMessage when a message must be sent to an adjacent server of this server.
+            </summary>
+            <param name="senderApplication">Sender application/server</param>
+            <param name="senderCommunicator">Sender communicator</param>
+            <param name="message">Message</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.SendToNextServer(DotNetMQ.Communication.MDSRemoteApplication,DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            This method is called by ProcessDataTransferMessage when a message must be sent to a server
+            that is not an adjacent of this server. Message is forwarded to next server.
+            </summary>
+            <param name="senderApplication">Sender application/server</param>
+            <param name="senderCommunicator">Sender communicator</param>
+            <param name="message">Message</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.SendMessageDirectly(DotNetMQ.Communication.MDSRemoteApplication,DotNetMQ.Communication.ICommunicator,DotNetMQ.Organization.MDSPersistentRemoteApplicationBase,DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Sends message directly to application (not stores) and waits ACK.
+            This method adds message to queue by MDSPersistentRemoteApplicationBase.AddMessageToHeadOfQueue method
+            and waits a signal/pulse from RemoteApplication_MessageReceived method to get ACK/Reject.
+            </summary>
+            <param name="senderApplication">Sender application/server</param>
+            <param name="senderCommunicator">Sender communicator</param>
+            <param name="destApplication">Destination application/server</param>
+            <param name="message">Message</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.EnqueueMessage(DotNetMQ.Communication.MDSRemoteApplication,DotNetMQ.Communication.ICommunicator,DotNetMQ.Organization.MDSPersistentRemoteApplicationBase,DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Adds message to destination's send queue.
+            </summary>
+            <param name="senderApplication">Sender application/server</param>
+            <param name="senderCommunicator">Sender communicator</param>
+            <param name="destApplication">Destination application/server</param>
+            <param name="message">Message</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.SendOperationResultMessage(DotNetMQ.Communication.MDSRemoteApplication,DotNetMQ.Communication.ICommunicator,DotNetMQ.Communication.Messages.MDSDataTransferMessage,System.Boolean,System.String)">
+            <summary>
+            To send a MDSOperationResultMessage to remote application's spesific communicator.
+            </summary>
+            <param name="senderApplication">Sender application/server</param>
+            <param name="communicator">Communicator to send message</param>
+            <param name="repliedMessage">Replied Message</param>
+            <param name="success">Operation result</param>
+            <param name="resultText">Details</param>
+        </member>
+        <member name="T:DotNetMQ.Organization.OrganizationLayer.WaitingMessage">
+            <summary>
+            This class is used as item in _waitingMessages collection.
+            Key: Message ID to wait response.
+            Value: ManualResetEvent to wait thread until response received.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.OrganizationLayer.WaitingMessage.WaitEvent">
+            <summary>
+            ManualResetEvent to wait thread until response received.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.OrganizationLayer.WaitingMessage.ResponseMessage">
+            <summary>
+            Response message received as ACK/Reject for sent message
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.OrganizationLayer.WaitingMessage.#ctor">
+            <summary>
+            Creates a new WaitingMessage.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Organization.Routing.DistributionStrategyBase">
+            <summary>
+            Base class for distribution strategies.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.Routing.DistributionStrategyBase.RoutingRule">
+            <summary>
+            Reference to RoutingRule object that uses this distribution strategy to route messages.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.DistributionStrategyBase.#ctor(DotNetMQ.Organization.Routing.RoutingRule)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="routingRule">Reference to RoutingRule object that uses this distribution strategy to route messages</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.DistributionStrategyBase.SetMessageDestination(DotNetMQ.Communication.Messages.MDSDataTransferMessage,DotNetMQ.Organization.Routing.RoutingDestination)">
+            <summary>
+            Sets the destination of a message.
+            </summary>
+            <param name="message">Message to set it's destination</param>
+            <param name="destination">Destination to set to message</param>
+        </member>
+        <member name="T:DotNetMQ.Organization.Routing.IDistributionStrategy">
+            <summary>
+            Interface of a distribution strategy.
+            A distribution strategy is a way of redirecting a message to one of available destinations.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.IDistributionStrategy.Reset">
+            <summary>
+            Initializes and Resets distribution strategy.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.IDistributionStrategy.SetDestination(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Sets the destination of a message according to distribution strategy.
+            </summary>
+            <param name="message">Message to set it's destination</param>
+        </member>
+        <member name="T:DotNetMQ.Organization.Routing.RandomDistribution">
+            <summary>
+            Random distribution strategy.
+            According to this strategy, a message is routed one of available destinations randomly according to destination's RouteFactor.
+            For example, if,
+            
+            - Destination-A has a RouteFactor of 4
+            - Destination-B has a RouteFactor of 1
+            
+            Then, probability of routing a message to destinations:
+            
+            - Destination-A -> 80%
+            - Destination-B -> 20%
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.Routing.RandomDistribution._rnd">
+            <summary>
+            A Random object to create random numbers.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.Routing.RandomDistribution._maxCount">
+            <summary>
+            Maximum count to create random numbers.
+            This is the total count of all RouteFactors of Destinations and calculated by Reset method.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RandomDistribution.#ctor(DotNetMQ.Organization.Routing.RoutingRule)">
+            <summary>
+            Creates a new RandomDistribution object.
+            </summary>
+            <param name="routingRule">Reference to RoutingRule object that uses this distribution strategy to route messages</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RandomDistribution.Reset">
+            <summary>
+            Initializes and Resets distribution strategy.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RandomDistribution.SetDestination(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Sets the destination of a message according to distribution strategy.
+            </summary>
+            <param name="message">Message to set it's destination</param>
+        </member>
+        <member name="T:DotNetMQ.Organization.Routing.RoutingDestination">
+            <summary>
+            Represents a Destination of a Routing.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingDestination.Server">
+            <summary>
+            Destination server name. Must be one of following values:
+            Empty string or null: Don't change destination server.
+            this: Change to this/current server.
+            A server name: Change to a specified server name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingDestination.Application">
+            <summary>
+            Destination application name. Must be one of following values:
+            Empty string or null: Don't change destination application.
+            A application name: Change to a specified application name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingDestination.RouteFactor">
+            <summary>
+            Route factor.
+            Must be 1 or greater.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingDestination.#ctor">
+            <summary>
+            Creates a new RoutingDestination object.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingDestination.ToString">
+            <summary>
+            Returns a string that presents a brief information about RoutingFilter object.
+            </summary>
+            <returns>Brief information about RoutingFilter object</returns>
+        </member>
+        <member name="T:DotNetMQ.Organization.Routing.RoutingFilter">
+            <summary>
+            Represents a filter of a routing.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingFilter.SourceServer">
+            <summary>
+            Source server name for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            this: For this/current server.
+            A server name: For a specified server name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingFilter.SourceApplication">
+            <summary>
+            Source application name for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            An application name: For a specified application name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingFilter.DestinationServer">
+            <summary>
+            Destination server name for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            this: For this/current server.
+            A server name: For a specified server name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingFilter.DestinationApplication">
+            <summary>
+            Destination application name for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            An application name: For a specified application name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingFilter.TransmitRule">
+            <summary>
+            Transmit rule for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            An element of MessageTransmitRules enum.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingFilter.#ctor">
+            <summary>
+            Creates a new RoutingFilter object.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingFilter.Matches(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Checks if a message matches with this filter.
+            </summary>
+            <param name="message">Message to check</param>
+            <returns>True, if message matches with this rule</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingFilter.ToString">
+            <summary>
+            Returns a string that presents a brief information about RoutingFilter object.
+            </summary>
+            <returns>Brief information about RoutingFilter object</returns>
+        </member>
+        <member name="T:DotNetMQ.Organization.Routing.RoutingRule">
+            <summary>
+            Represents a routing rule.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingRule.Name">
+            <summary>
+            Name of the Route.
+            It does not effect routing.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingRule.DistributionType">
+            <summary>
+            Gets/Sets Route distribution type.
+            Sequential: To use SequentialDistribution strategy.
+            Random: To use RandomDistribution strategy.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingRule.Filters">
+            <summary>
+            Routing filters.
+            If a message matches one of this filters, it is routed by this RouteRule.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingRule.Destinations">
+            <summary>
+            Routing destinations.
+            A messages that is filtered by this rule is redirected one of this destinations according to current distribution strategy.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingRule.DistributionStrategy">
+            <summary>
+            Gets the current distribution strategy.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingRule.ApplyRule(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Tries to appliy this rule to a data transfer message.
+            </summary>
+            <param name="message">Message to apply rule</param>
+            <returns>True, if rule applied</returns>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingRule.ToString">
+            <summary>
+            Returns a string that presents a brief information about RoutingRule object.
+            </summary>
+            <returns>Brief information about RoutingRule object</returns>
+        </member>
+        <member name="T:DotNetMQ.Organization.Routing.RoutingTable">
+            <summary>
+            Represents routing table that contains all routing rules.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Organization.Routing.RoutingTable.Rules">
+            <summary>
+            All routing rules.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.Routing.RoutingTable._settings">
+            <summary>
+            Settings.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingTable.#ctor">
+            <summary>
+            Creates a new RoutingTable object.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingTable.ApplyRouting(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Checks all routing rules and apply proper rule to the message
+            </summary>
+            <param name="message">Message to apply routing</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.RoutingTable.CreateRuleList">
+            <summary>
+            Creates Rules list from settings.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Organization.Routing.SequentialDistribution">
+            <summary>
+            Sequential distribution strategy.
+            According to this strategy, a message is routed one of available destinations sequentially according to destination's RouteFactor.
+            For example, if,
+            
+            - Destination-A has a RouteFactor of 4
+            - Destination-B has a RouteFactor of 1
+            
+            Then, 4 messages are sent to Destination-A, 1 message is sent to Destination-B sequentially.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.Routing.SequentialDistribution._totalCount">
+            <summary>
+            Total count of all RouteFactors of Destinations and calculated by Reset method.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Organization.Routing.SequentialDistribution._currentNumber">
+            <summary>
+            Current routing number. It is used to determine the next routing destination.
+            For example, if,
+            
+            - Destination-A has a RouteFactor of 4
+            - Destination-B has a RouteFactor of 3
+            - Destination-C has a RouteFactor of 3
+            
+            and _currentNumber is 5, then destination is Destination-B. 
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.SequentialDistribution.#ctor(DotNetMQ.Organization.Routing.RoutingRule)">
+            <summary>
+            Creates a new SequentialDistribution object.
+            </summary>
+            <param name="routingRule">Reference to RoutingRule object that uses this distribution strategy to route messages</param>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.SequentialDistribution.Reset">
+            <summary>
+            Initializes and Resets distribution strategy.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Organization.Routing.SequentialDistribution.SetDestination(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Sets the destination of a message according to distribution strategy.
+            </summary>
+            <param name="message">Message to set it's destination</param>
+        </member>
+        <member name="T:DotNetMQ.Properties.Resources">
+            <summary>
+              一个强类型的资源类，用于查找本地化的字符串等。
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Properties.Resources.ResourceManager">
+            <summary>
+              返回此类使用的缓存的 ResourceManager 实例。
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Properties.Resources.Culture">
+            <summary>
+              重写当前线程的 CurrentUICulture 属性
+              重写当前线程的 CurrentUICulture 属性。
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Properties.Resources.ShowHelp">
+            <summary>
+              查找类似 显示帮助 的本地化字符串。
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Properties.Resources.TheCertificateIsInstalled">
+            <summary>
+              查找类似 The certificate is installed 的本地化字符串。
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.MDSServer">
+            <summary>
+            Represents a MDS server. This is the main class to construct and run a MDS server.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.MDSServer._settings">
+            <summary>
+            Settings.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.MDSServer._storageManager">
+            <summary>
+            Storage manager used for database operations.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.MDSServer._routingTable">
+            <summary>
+            Routing table.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.MDSServer._serverGraph">
+            <summary>
+            A Graph consist of server nodes. It also holds references to MDSAdjacentServer objects.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.MDSServer._mdsManager">
+            <summary>
+            Reference to all MDS Managers. It contains communicators to all instances of MDS manager.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.MDSServer._clientApplicationList">
+            <summary>
+            List of applications
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.MDSServer._communicationLayer">
+            <summary>
+            Communication layer.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.MDSServer._organizationLayer">
+            <summary>
+            Organization layer.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.MDSServer.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.MDSServer.StartAsync(System.Threading.CancellationToken)">
+            <summary>
+            Starts the MDS server.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.MDSServer.StopAsync(System.Threading.CancellationToken)">
+            <summary>
+            Stops the MDS server.
+            </summary>
+            <param name="cancellationToken">True, if caller thread must be blocked until MDS server stops.</param>
+        </member>
+        <member name="M:DotNetMQ.MDSServer.WaitToStop">
+            <summary>
+            Waits stopping of MDS server.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.MDSServer.CorrectDatabase">
+            <summary>
+            Checks and corrects database records if needed.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Settings.ApplicationInfoItem">
+            <summary>
+            Represents a Client Application's informations in settings.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ApplicationInfoItem.Name">
+            <summary>
+            Name of this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ApplicationInfoItem.CommunicationChannels">
+            <summary>
+            Predefined communication channels.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Settings.ApplicationInfoItem.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Settings.ApplicationInfoItem.CommunicationChannelInfoItem">
+            <summary>
+            Represents a predefined Communication channel for an Application.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ApplicationInfoItem.CommunicationChannelInfoItem.CommunicationType">
+            <summary>
+            Type of communicaton. Can be WebService.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ApplicationInfoItem.CommunicationChannelInfoItem.CommunicationSettings">
+            <summary>
+            Settings for communication. For example, includes Url info if CommunicationType is WebService.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Settings.ApplicationInfoItem.CommunicationChannelInfoItem.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Settings.MDSDesignSettings">
+            <summary>
+            This class is used to get/set all design settings for this server from/to an XML file.
+            Design settings is used by MDS Manager GUI.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSDesignSettings.Instance">
+            <summary>
+            Singleton instance of MDSSettings.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSDesignSettings.Servers">
+            <summary>
+            All defined MDS servers in server graph.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSDesignSettings.FilePath">
+            <summary>
+            Path of XML design settings file.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Settings.MDSDesignSettings.#ctor(System.String)">
+            <summary>
+            Creates a new MDSSettings from XML file.
+            </summary>
+            <param name="settingsFilePath">Path of xml file.</param>
+        </member>
+        <member name="M:DotNetMQ.Settings.MDSDesignSettings.SaveToXml">
+            <summary>
+            Saves current design settings to XML file.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Settings.MDSDesignSettings.LoadFromXml">
+            <summary>
+            Gets all settings from XML file.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Settings.MDSSettings">
+            <summary>
+            This class is used to get/set all settings for this server from/to an XML file.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSSettings.Instance">
+            <summary>
+            Singleton instance of MDSSettings.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSSettings.Servers">
+            <summary>
+            All defined MDS servers in server graph.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSSettings.Applications">
+            <summary>
+            All defined Client applications.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSSettings.Routes">
+            <summary>
+            All defined Route informations.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSSettings.ThisServerName">
+            <summary>
+            Name of this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSSettings.MessageResponseTimeout">
+            <summary>
+            This value indicates timeout value to wait for ACK/Reject message from a remote application for a data transfer message.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSSettings.Item(System.String)">
+            <summary>
+            Gets/Sets a setting.
+            </summary>
+            <param name="fieldName">Name of setting</param>
+            <returns>Value of setting</returns>
+        </member>
+        <member name="P:DotNetMQ.Settings.MDSSettings.FilePath">
+            <summary>
+            Path of XML settings file.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Settings.MDSSettings.#ctor(System.String)">
+            <summary>
+            Creates a new MDSSettings from XML file.
+            </summary>
+            <param name="settingsFilePath">Path of xml file.</param>
+        </member>
+        <member name="M:DotNetMQ.Settings.MDSSettings.SaveToXml">
+            <summary>
+            Saves current settings to XML file.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Settings.MDSSettings.LoadFromXml">
+            <summary>
+            Gets all settings from XML file.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Settings.RouteInfoItem">
+            <summary>
+            Represents a Route information in settings.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.Name">
+            <summary>
+            Name of the Route.
+            It does not effect routing.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.DistributionType">
+            <summary>
+            Distribution type/strategy. Must be one of following values:
+            Sequential: To use Sequential Distribution strategy.
+            Random: To use Random Distribution strategy.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.Filters">
+            <summary>
+            Routing filters.
+            If a message matches one of this filters, it is routed by this route rule.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.Destinations">
+            <summary>
+            Routing destinations.
+            A messages that is filtered by this rule is redirected one of this destinations according to current distribution strategy.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Settings.RouteInfoItem.#ctor">
+            <summary>
+            Creates a new RouteInfoItem object.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Settings.RouteInfoItem.FilterInfoItem">
+            <summary>
+            Represents a Filter information of a Route in settings.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.FilterInfoItem.SourceServer">
+            <summary>
+            Source server name for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            this: For this/current server.
+            A server name: For a specified server name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.FilterInfoItem.SourceApplication">
+            <summary>
+            Source application name for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            An application name: For a specified application name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.FilterInfoItem.DestinationServer">
+            <summary>
+            Destination server name for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            this: For this/current server.
+            A server name: For a specified server name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.FilterInfoItem.DestinationApplication">
+            <summary>
+            Destination application name for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            An application name: For a specified application name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.FilterInfoItem.TransmitRule">
+            <summary>
+            Transmit rule for the filter. Must be one of following values:
+            Empty string or null: No filter on this property.
+            An element of MessageTransmitRules enum.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Settings.RouteInfoItem.DestinationInfoItem">
+            <summary>
+            Represents a Destination information of a Route in settings.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.DestinationInfoItem.Server">
+            <summary>
+            Destination server name. Must be one of following values:
+            Empty string or null: Don't change destination server.
+            this: Change to this/current server.
+            A server name: Change to a specified server name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.DestinationInfoItem.Application">
+            <summary>
+            Destination application name. Must be one of following values:
+            Empty string or null: Don't change destination application.
+            A application name: Change to a specified application name.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.RouteInfoItem.DestinationInfoItem.RouteFactor">
+            <summary>
+            Route factor.
+            Must be 1 or greater.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Settings.ServerDesignItem">
+            <summary>
+            Represents a Server's design informations in design settings.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ServerDesignItem.Name">
+            <summary>
+            Name of this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ServerDesignItem.Location">
+            <summary>
+            Location of server (Left (X) and Top (Y) properties in design area, seperated by comma (,)).
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Settings.ServerInfoItem">
+            <summary>
+            Represents a Server's informations in settings.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ServerInfoItem.Name">
+            <summary>
+            Name of this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ServerInfoItem.IpAddress">
+            <summary>
+            IP address of this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ServerInfoItem.Port">
+            <summary>
+            TCP Port number that is listened by this server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Settings.ServerInfoItem.Adjacents">
+            <summary>
+            List of adjacent servers of this server that are splitted by , or ;
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper">
+            <summary>
+            This class adds fault tolerance improvements to a Storage Manager.
+            Tries database operations more than once until specified timeout occurs. 
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper.TimeOut">
+            <summary>
+            Timeout value to cancel trying operation again (as milliseconds).
+            Default: 90 seconds (90000 ms).
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper.WaitTimeBeforeRetry">
+            <summary>
+            This value determines th time to wait before retry on an exception (as milliseconds).
+            Default: 1 seconds (1000 ms).
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper.RestartStorageManagerOnException">
+            <summary>
+            If this is true, StorageManager is restarted (Stop, Start) after an error, before next try.
+            Default: true
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper.Logger">
+            <summary>
+            Reference to logger.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper._storageManager">
+            <summary>
+            Original Storage Manager to perform database operations.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper._lastRestartTime">
+            <summary>
+            The last restart time of storage manager.
+            This is used to prevent very frequently restarts.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper._syncObj">
+            <summary>
+            This object is used to synchronizing threads.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper.#ctor(DotNetMQ.Storage.IStorageManager)">
+            <summary>
+            Creates a new FaultToleratedStorageManagerWrapper, wraps a IStorageManager.
+            </summary>
+            <param name="storageManager">Original Storage Manager to perform database operations</param>
+        </member>
+        <member name="M:DotNetMQ.Storage.FaultToleratedStorageManagerWrapper.RestartStorageManager">
+            <summary>
+            Restarts Storage Manager if RestartStorageManagerOnException is true.
+            </summary>
+        </member>
+        <member name="T:DotNetMQ.Storage.IStorageManager">
+            <summary>
+            Defines an interface for (database) storing operations. Thus, MDS Server can use more than one
+            storage engine for messages and other database operations.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.IStorageManager.StoreMessage(DotNetMQ.Storage.MDSMessageRecord)">
+            <summary>
+            Saves a MDSMessageRecord.
+            </summary>
+            <param name="messageRecord">MDSMessageRecord object to save</param>
+            <returns>Auto Increment Id of saved message</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.IStorageManager.GetWaitingMessagesOfApplication(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.IStorageManager.GetMaxWaitingMessageIdOfApplication(System.String,System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.IStorageManager.GetWaitingMessagesOfServer(System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.IStorageManager.GetMaxWaitingMessageIdOfServer(System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.IStorageManager.RemoveMessage(System.Int32)">
+            <summary>
+            Removes a message.
+            </summary>
+            <param name="id">id of message to remove</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.IStorageManager.UpdateNextServer(System.String,System.String)">
+            <summary>
+            This method is used to set Next Server for a Destination Server. 
+            It is used to update database records when Server Graph changed.
+            </summary>
+            <param name="destServer">Destination server of messages</param>
+            <param name="nextServer">Next server of messages for destServer</param>
+        </member>
+        <member name="T:DotNetMQ.Storage.MDSMessageRecord">
+            <summary>
+            Represents a message record in database/storage manager.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MDSMessageRecord.Id">
+            <summary>
+            Auto Increment ID in database.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MDSMessageRecord.MessageId">
+            <summary>
+            MessageId of message.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MDSMessageRecord.Message">
+            <summary>
+            Message object.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MDSMessageRecord.DestServer">
+            <summary>
+            Destination server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MDSMessageRecord.NextServer">
+            <summary>
+            Next server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MDSMessageRecord.DestApplication">
+            <summary>
+            Destination application in destination server
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MDSMessageRecord.RecordDate">
+            <summary>
+            Storing time of message on this server.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.MDSMessageRecord.#ctor">
+            <summary>
+            Empty contructor.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.MDSMessageRecord.#ctor(DotNetMQ.Communication.Messages.MDSDataTransferMessage)">
+            <summary>
+            Creates a MDSMessageRecord object using a MDSDataTransferMessage.
+            </summary>
+            <param name="message">Message object</param>
+        </member>
+        <member name="T:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager">
+            <summary>
+            Performs all database/storing operations on memory. So, all stored informations are lost
+            on server shutdown.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager._messages">
+            <summary>
+            A list to store message records (Messages table).
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager._lastRecordId">
+            <summary>
+            Stores ID field of last inserted item to the _messages list.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.#ctor">
+            <summary>
+            Creates a new MemoryStorageManager.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.Start">
+            <summary>
+            Starts the storage manager.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.Stop(System.Boolean)">
+            <summary>
+            Stops the storage manager.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.StoreMessage(DotNetMQ.Storage.MDSMessageRecord)">
+            <summary>
+            Saves a MDSMessageRecord object.
+            </summary>
+            <param name="messageRecord"></param>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.GetWaitingMessagesOfApplication(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.GetMaxWaitingMessageIdOfApplication(System.String,System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.GetWaitingMessagesOfServer(System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.GetMaxWaitingMessageIdOfServer(System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.RemoveMessage(System.Int32)">
+            <summary>
+            Removes a message record.
+            </summary>
+            <param name="recordId">recordId to delete</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MemoryStorage.MemoryStorageManager.UpdateNextServer(System.String,System.String)">
+            <summary>
+            This method is used to set Next Server for a Destination Server. 
+            It is used to update database records when Server Graph changed.
+            </summary>
+            <param name="destServer">Destination server of messages</param>
+            <param name="nextServer">Next server of messages for destServer</param>
+        </member>
+        <member name="T:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager">
+            <summary>
+            This class is used to perform database operations on MS SQL Server database engine.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.ConnectionString">
+            <summary>
+            Connection string to connect database.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.StoreMessage(DotNetMQ.Storage.MDSMessageRecord)">
+            <summary>
+            Saves a MDSMessageRecord.
+            </summary>
+            <param name="messageRecord">MDSMessageRecord object to save</param>
+            <returns>Auto Increment Id of saved message</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.GetWaitingMessagesOfApplication(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.GetMaxWaitingMessageIdOfApplication(System.String,System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.GetWaitingMessagesOfServer(System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.GetMaxWaitingMessageIdOfServer(System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.RemoveMessage(System.Int32)">
+            <summary>
+            Removes a message.
+            </summary>
+            <param name="id">id of message to remove</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.UpdateNextServer(System.String,System.String)">
+            <summary>
+            This method is used to set Next Server for a Destination Server. 
+            It is used to update database records when Server Graph changed.
+            </summary>
+            <param name="destServer">Destination server of messages</param>
+            <param name="nextServer">Next server of messages for destServer</param>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.ExecuteNonQuery(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            Executes a query and returns effected rows count.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.InsertAndGetLastId(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            This method is used to run an insert query and get inserted row's auto increment column's value.
+            </summary>
+            <param name="query">Insert query to be executed</param>
+            <param name="parameters">Parameters</param>
+            <returns>Auto increment column's value of inserted row</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.GetTable(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            Runs a query and returns a DataTable.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Selected table</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.GetTableRecord(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            Gets a record from a table.
+            </summary>
+            <param name="query">Select query</param>
+            <param name="parameters">Select parameters</param>
+            <returns>Returns found row as TableRecord object. If there is no row returns null</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MsSqlStorage.MsSqlStorageManager.GetScalarField(System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            Executes a query and gets a Integer result.
+            If query returns no data, method returns 0.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Query result or 0</returns>
+        </member>
+        <member name="T:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager">
+            <summary>
+            This class is used to perform database operations on MySQL database engine using MySQL .Net Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.ConnectionString">
+            <summary>
+            Connection string to connect database.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.StoreMessage(DotNetMQ.Storage.MDSMessageRecord)">
+            <summary>
+            Saves a MDSMessageRecord.
+            </summary>
+            <param name="messageRecord">MDSMessageRecord object to save</param>
+            <returns>Auto Increment Id of saved message</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.GetWaitingMessagesOfApplication(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.GetMaxWaitingMessageIdOfApplication(System.String,System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.GetWaitingMessagesOfServer(System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.GetMaxWaitingMessageIdOfServer(System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.RemoveMessage(System.Int32)">
+            <summary>
+            Removes a message.
+            </summary>
+            <param name="id">id of message to remove</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.UpdateNextServer(System.String,System.String)">
+            <summary>
+            This method is used to set Next Server for a Destination Server. 
+            It is used to update database records when Server Graph changed.
+            </summary>
+            <param name="destServer">Destination server of messages</param>
+            <param name="nextServer">Next server of messages for destServer</param>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.ExecuteNonQuery(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            Executes a query and returns effected rows count.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.InsertAndGetLastId(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            This method is used to run an insert query and get inserted row's auto increment column's value.
+            </summary>
+            <param name="query">Insert query to be executed</param>
+            <param name="parameters">Parameters</param>
+            <returns>Auto increment column's value of inserted row</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.GetTable(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            Runs a query and returns a DataTable.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Selected table</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.GetTableRecord(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            Gets a record from a table.
+            </summary>
+            <param name="query">Select query</param>
+            <param name="parameters">Select parameters</param>
+            <returns>Returns found row as TableRecord object. If there is no row returns null</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlNetStorageManager.GetScalarField(System.String,MySql.Data.MySqlClient.MySqlParameter[])">
+            <summary>
+            Executes a query and gets a Integer result.
+            If query returns no data, method returns 0.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Query result or 0</returns>
+        </member>
+        <member name="T:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager">
+            <summary>
+            This class is used to perform database operations on MySQL database engine using ODBC.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.ConnectionString">
+            <summary>
+            Connection string to connect database.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.StoreMessage(DotNetMQ.Storage.MDSMessageRecord)">
+            <summary>
+            Saves a MDSMessageRecord.
+            </summary>
+            <param name="messageRecord">MDSMessageRecord object to save</param>
+            <returns>Auto Increment Id of saved message</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.GetWaitingMessagesOfApplication(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.GetMaxWaitingMessageIdOfApplication(System.String,System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.GetWaitingMessagesOfServer(System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.GetMaxWaitingMessageIdOfServer(System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.RemoveMessage(System.Int32)">
+            <summary>
+            Removes a message.
+            </summary>
+            <param name="id">id of message to remove</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.UpdateNextServer(System.String,System.String)">
+            <summary>
+            This method is used to set Next Server for a Destination Server. 
+            It is used to update database records when Server Graph changed.
+            </summary>
+            <param name="destServer">Destination server of messages</param>
+            <param name="nextServer">Next server of messages for destServer</param>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.ExecuteNonQuery(System.String,System.Data.Odbc.OdbcParameter[])">
+            <summary>
+            Executes a query and returns effected rows count.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.InsertAndGetLastId(System.String,System.Data.Odbc.OdbcParameter[])">
+            <summary>
+            This method is used to run an insert query and get inserted row's auto increment column's value.
+            </summary>
+            <param name="query">Insert query to be executed</param>
+            <param name="parameters">Parameters</param>
+            <returns>Auto increment column's value of inserted row</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.GetTable(System.String,System.Data.Odbc.OdbcParameter[])">
+            <summary>
+            Runs a query and returns a DataTable.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Selected table</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.GetTableRecord(System.String,System.Data.Odbc.OdbcParameter[])">
+            <summary>
+            Gets a record from a table.
+            </summary>
+            <param name="query">Select query</param>
+            <param name="parameters">Select parameters</param>
+            <returns>Returns found row as TableRecord object. If there is no row returns null</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.MySqlStorage.MySqlOdbcStorageManager.GetScalarField(System.String,System.Data.Odbc.OdbcParameter[])">
+            <summary>
+            Executes a query and gets a Integer result.
+            If query returns no data, method returns 0.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Query result or 0</returns>
+        </member>
+        <member name="T:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager">
+            <summary>
+            This class is used to perform database operations on SQLite database engine.
+            To use this storage manager, SqliteDB\MDS.s3db file must be in root folder of MDS server.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.ConnectionString">
+            <summary>
+            Connection string to connect database.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager._connection">
+            <summary>
+            Open database connection.
+            </summary>
+        </member>
+        <member name="F:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager._syncObj">
+            <summary>
+            This object is used to synchronized access to database. One thread in a time.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.#ctor">
+            <summary>
+            Creates a new SqliteStorageManager object.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.Start">
+            <summary>
+            Initializes SQLite connection.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.StoreMessage(DotNetMQ.Storage.MDSMessageRecord)">
+            <summary>
+            Saves a MDSMessageRecord.
+            </summary>
+            <param name="messageRecord">MDSMessageRecord object to save</param>
+            <returns>Auto Increment Id of saved message</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.GetWaitingMessagesOfApplication(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.GetMaxWaitingMessageIdOfApplication(System.String,System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an application.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="destApplication">Destination application name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.GetWaitingMessagesOfServer(System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <param name="minId">Minimum Id (as start Id)</param>
+            <param name="maxCount">Max record count to get</param>
+            <returns>Records gotten from database.</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.GetMaxWaitingMessageIdOfServer(System.String)">
+            <summary>
+            Gets last (biggest) Id of waiting messages for an MDS server.
+            </summary>
+            <param name="nextServer">Next server name</param>
+            <returns>last (biggest) Id of waiting messages</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.RemoveMessage(System.Int32)">
+            <summary>
+            Removes a message.
+            </summary>
+            <param name="id">id of message to remove</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.UpdateNextServer(System.String,System.String)">
+            <summary>
+            This method is used to set Next Server for a Destination Server. 
+            It is used to update database records when Server Graph changed.
+            </summary>
+            <param name="destServer">Destination server of messages</param>
+            <param name="nextServer">Next server of messages for destServer</param>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.ExecuteNonQuery(System.String,System.Data.SQLite.SQLiteParameter[])">
+            <summary>
+            Executes a query and returns effected rows count.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Effected rows count</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.InsertAndGetLastId(System.String,System.Data.SQLite.SQLiteParameter[])">
+            <summary>
+            This method is used to run an insert query and get inserted row's auto increment column's value.
+            </summary>
+            <param name="query">Insert query to be executed</param>
+            <param name="parameters">Parameters</param>
+            <returns>Auto increment column's value of inserted row</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.GetTable(System.String,System.Data.SQLite.SQLiteParameter[])">
+            <summary>
+            Runs a query and returns a DataTable.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Selected table</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.GetTableRecord(System.String,System.Data.SQLite.SQLiteParameter[])">
+            <summary>
+            Gets a record from a table.
+            </summary>
+            <param name="query">Select query</param>
+            <param name="parameters">Select parameters</param>
+            <returns>Returns found row as TableRecord object. If there is no row returns null</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.SQLiteStorage.SqliteStorageManager.GetScalarField(System.String,System.Data.SQLite.SQLiteParameter[])">
+            <summary>
+            Executes a query and gets a Integer result.
+            If query returns no data, method returns 0.
+            </summary>
+            <param name="query">Query to execute</param>
+            <param name="parameters">Parameters</param>
+            <returns>Query result or 0</returns>
+        </member>
+        <member name="M:DotNetMQ.Storage.StorageManagerFactory.CreateStorageManager">
+            <summary>
+            Creates Storage Manager according to StorageType value in Settings file.
+            </summary>
+            <returns>Storame Manager</returns>
+        </member>
+        <member name="T:DotNetMQ.Storage.TableRecord">
+            <summary>
+            Represents a single row in a table in a database.
+            </summary>
+        </member>
+        <member name="P:DotNetMQ.Storage.TableRecord.Item(System.String)">
+            <summary>
+            Gets/Sets a field value.
+            </summary>
+            <param name="fieldName">Name of field</param>
+            <returns>Value of field</returns>
+        </member>
+        <member name="F:DotNetMQ.Storage.TableRecord._fields">
+            <summary>
+            Fields and their values in this record.
+            </summary>
+        </member>
+        <member name="M:DotNetMQ.Storage.TableRecord.#ctor">
+            <summary>
+            Creates a new TableRecord object.
+            </summary>
+        </member>
+    </members>
+</doc>

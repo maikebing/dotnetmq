@@ -1,0 +1,17 @@
+[Unit]
+Description=DotNetMQ running on Linux
+
+[Service]
+WorkingDirectory=/var/lib/dotnetmq
+ExecStart=/var/lib/dotnetmq/DotNetMQ
+Restart=always
+# Restart service after 10 seconds if the DotNetMQ service crashes:
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dotnetmq
+User=DotNetMQ
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target

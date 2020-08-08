@@ -1,4 +1,4 @@
-﻿namespace MDS.Management.GUI
+﻿namespace DotNetMQ.Management.GUI
 {
     partial class MainForm
     {

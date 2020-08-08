@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MDS.Tools.ProxyGenerator
+namespace DotNetMQ.Tools.ProxyGenerator
 {
     static class Program
     {

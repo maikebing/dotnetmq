@@ -1,4 +1,4 @@
-﻿namespace MDS.Management.GUI.MDSServers
+﻿namespace DotNetMQ.Management.GUI.MDSServers
 {
     partial class EditRouteForm
     {

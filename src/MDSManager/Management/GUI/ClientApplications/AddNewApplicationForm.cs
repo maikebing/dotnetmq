@@ -19,9 +19,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 using System;
 using System.Windows.Forms;
-using MDS.GUI;
+using DotNetMQ.GUI;
 
-namespace MDS.Management.GUI.ClientApplications
+namespace DotNetMQ.Management.GUI.ClientApplications
 {
     public partial class AddNewApplicationForm : Form
     {

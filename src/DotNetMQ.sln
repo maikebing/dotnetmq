@@ -1,17 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetMQ", "DotNetMQ\DotNetMQ.csproj", "{7634394B-5A25-4DCC-849A-D7A8FDEFF9FC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSCommonLib", "MDSCommonLib\MDSCommonLib.csproj", "{055149D1-A267-4E2E-B8AE-EA7848A45701}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSCore", "MDSCore\MDSCore.csproj", "{AB59B8B2-D414-483F-AA72-A2644D92C86D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSManager", "MDSManager\MDSManager.csproj", "{FD323317-5B22-413C-8ADC-6701C2B7EB76}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30330.147
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{A5C714B5-FAB7-4934-9761-71E0CE785B8F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSServiceProxyGenerator", "Tools\MDSServiceProxyGenerator\MDSServiceProxyGenerator.csproj", "{B49D18FF-DD77-46A4-880A-F0B9598C6070}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{BC8AA727-4F74-4186-9018-95F4BA963DD0}"
 EndProject
@@ -39,8 +31,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{764E14
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9F4A05C3-ADFD-411D-9151-FBA5463C8441}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerTest", "Tests\ServerTest\ServerTest.csproj", "{4B4B3551-78B8-4CE2-BD0A-98E8EC496E80}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MSSQL", "MSSQL", "{DFDDFE51-1B60-443B-888D-B4ACB3B0D0DB}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\Databases\MSSQL\DB-FILES.zip = Dependencies\Databases\MSSQL\DB-FILES.zip
@@ -48,24 +38,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MSSQL", "MSSQL", "{DFDDFE51
 		Dependencies\Databases\MSSQL\Tables.txt = Dependencies\Databases\MSSQL\Tables.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSManager", "MDSManager\MDSManager.csproj", "{FD323317-5B22-413C-8ADC-6701C2B7EB76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSServiceProxyGenerator", "Tools\MDSServiceProxyGenerator\MDSServiceProxyGenerator.csproj", "{B49D18FF-DD77-46A4-880A-F0B9598C6070}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerTest", "Tests\ServerTest\ServerTest.csproj", "{4B4B3551-78B8-4CE2-BD0A-98E8EC496E80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetMQ", "DotNetMQ\DotNetMQ.csproj", "{1FAA16CD-D910-410D-BFFF-7E66628DD24C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetMQ.Common", "DotNetMQ.Common\DotNetMQ.Common.csproj", "{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7634394B-5A25-4DCC-849A-D7A8FDEFF9FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7634394B-5A25-4DCC-849A-D7A8FDEFF9FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7634394B-5A25-4DCC-849A-D7A8FDEFF9FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7634394B-5A25-4DCC-849A-D7A8FDEFF9FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{055149D1-A267-4E2E-B8AE-EA7848A45701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{055149D1-A267-4E2E-B8AE-EA7848A45701}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{055149D1-A267-4E2E-B8AE-EA7848A45701}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{055149D1-A267-4E2E-B8AE-EA7848A45701}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB59B8B2-D414-483F-AA72-A2644D92C86D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB59B8B2-D414-483F-AA72-A2644D92C86D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB59B8B2-D414-483F-AA72-A2644D92C86D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB59B8B2-D414-483F-AA72-A2644D92C86D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD323317-5B22-413C-8ADC-6701C2B7EB76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD323317-5B22-413C-8ADC-6701C2B7EB76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD323317-5B22-413C-8ADC-6701C2B7EB76}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,17 +66,28 @@ Global
 		{4B4B3551-78B8-4CE2-BD0A-98E8EC496E80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B4B3551-78B8-4CE2-BD0A-98E8EC496E80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B4B3551-78B8-4CE2-BD0A-98E8EC496E80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FAA16CD-D910-410D-BFFF-7E66628DD24C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FAA16CD-D910-410D-BFFF-7E66628DD24C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FAA16CD-D910-410D-BFFF-7E66628DD24C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FAA16CD-D910-410D-BFFF-7E66628DD24C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B49D18FF-DD77-46A4-880A-F0B9598C6070} = {A5C714B5-FAB7-4934-9761-71E0CE785B8F}
 		{49BF0DB3-6E82-414C-BAAE-03094AF323F3} = {BC8AA727-4F74-4186-9018-95F4BA963DD0}
 		{05F27B70-CF54-4DFF-B6EB-C86D4352ACE1} = {BC8AA727-4F74-4186-9018-95F4BA963DD0}
 		{D94CC304-A7EC-43EC-BE0F-E0EEFE8683F0} = {49BF0DB3-6E82-414C-BAAE-03094AF323F3}
 		{764E147F-65EF-486E-B470-BD74E93048A0} = {49BF0DB3-6E82-414C-BAAE-03094AF323F3}
 		{DFDDFE51-1B60-443B-888D-B4ACB3B0D0DB} = {49BF0DB3-6E82-414C-BAAE-03094AF323F3}
+		{B49D18FF-DD77-46A4-880A-F0B9598C6070} = {A5C714B5-FAB7-4934-9761-71E0CE785B8F}
 		{4B4B3551-78B8-4CE2-BD0A-98E8EC496E80} = {9F4A05C3-ADFD-411D-9151-FBA5463C8441}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F547F1B2-4D87-40F4-ADC9-B709BFB1947A}
 	EndGlobalSection
 EndGlobal

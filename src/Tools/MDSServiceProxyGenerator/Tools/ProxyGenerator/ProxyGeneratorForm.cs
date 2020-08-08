@@ -8,10 +8,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using MDS.Client.MDSServices;
-using MDS.GUI;
+using DotNetMQ.Client.MDSServices;
+using DotNetMQ.GUI;
 
-namespace MDS.Tools.ProxyGenerator
+namespace DotNetMQ.Tools.ProxyGenerator
 {
     public partial class ProxyGeneratorForm : Form
     {

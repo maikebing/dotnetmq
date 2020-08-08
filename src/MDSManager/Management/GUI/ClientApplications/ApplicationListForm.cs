@@ -27,11 +27,11 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
-using MDS.Communication.Messages.ControllerMessages;
-using MDS.Exceptions;
-using MDS.GUI;
+using DotNetMQ.Communication.Messages.ControllerMessages;
+using DotNetMQ.Exceptions;
+using DotNetMQ.GUI;
 
-namespace MDS.Management.GUI.ClientApplications
+namespace DotNetMQ.Management.GUI.ClientApplications
 {
     public partial class ApplicationListForm : Form
     {

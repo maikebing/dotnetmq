@@ -21,13 +21,13 @@ using System;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
-using MDS.Communication.Messages.ControllerMessages;
-using MDS.Exceptions;
-using MDS.GUI;
-using MDS.Management.GUI.ClientApplications;
-using MDS.Management.GUI.MDSServers;
+using DotNetMQ.Communication.Messages.ControllerMessages;
+using DotNetMQ.Exceptions;
+using DotNetMQ.GUI;
+using DotNetMQ.Management.GUI.ClientApplications;
+using DotNetMQ.Management.GUI.MDSServers;
 
-namespace MDS.Management.GUI
+namespace DotNetMQ.Management.GUI
 {
     /// <summary>
     /// This is the main form of the application.

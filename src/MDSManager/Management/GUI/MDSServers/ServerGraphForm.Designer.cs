@@ -1,6 +1,6 @@
-﻿using MDS.Management.GUI.Tools;
+﻿using DotNetMQ.Management.GUI.Tools;
 
-namespace MDS.Management.GUI.MDSServers
+namespace DotNetMQ.Management.GUI.MDSServers
 {
     partial class ServerGraphForm
     {
@@ -32,7 +32,7 @@ namespace MDS.Management.GUI.MDSServers
         {
             this.components = new System.ComponentModel.Container();
             this.mainPanel = new System.Windows.Forms.Panel();
-            this.pnlDesign = new MDS.Management.GUI.Tools.DoubleBufferedPanel();
+            this.pnlDesign = new DotNetMQ.Management.GUI.Tools.DoubleBufferedPanel();
             this.cmsDesignAreaRightMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addNewServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSaveGraph = new System.Windows.Forms.Button();

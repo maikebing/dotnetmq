@@ -25,10 +25,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using MDS.Communication.Messages.ControllerMessages;
-using MDS.GUI;
+using DotNetMQ.Communication.Messages.ControllerMessages;
+using DotNetMQ.GUI;
 
-namespace MDS.Management.GUI.MDSServers
+namespace DotNetMQ.Management.GUI.MDSServers
 {
     /// <summary>
     /// This form is used to view/change properties of a server in graph.

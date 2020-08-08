@@ -1,4 +1,4 @@
-﻿namespace MDS.Management.GUI.ClientApplications
+﻿namespace DotNetMQ.Management.GUI.ClientApplications
 {
     partial class ApplicationListForm
     {

@@ -26,7 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace MDS.Management.GUI.MDSServers
+namespace DotNetMQ.Management.GUI.MDSServers
 {
     public partial class RoutesForm : Form
     {

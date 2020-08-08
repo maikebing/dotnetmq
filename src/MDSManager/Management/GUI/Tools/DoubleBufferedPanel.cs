@@ -23,7 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace MDS.Management.GUI.Tools
+namespace DotNetMQ.Management.GUI.Tools
 {
     /// <summary>
     /// This class is created to add Double Buffer capabilities to a Panel.

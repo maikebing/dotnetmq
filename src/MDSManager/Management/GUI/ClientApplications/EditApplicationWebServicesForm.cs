@@ -23,11 +23,11 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
-using MDS.Communication.Messages.ControllerMessages;
-using MDS.Exceptions;
-using MDS.GUI;
+using DotNetMQ.Communication.Messages.ControllerMessages;
+using DotNetMQ.Exceptions;
+using DotNetMQ.GUI;
 
-namespace MDS.Management.GUI.ClientApplications
+namespace DotNetMQ.Management.GUI.ClientApplications
 {
     /// <summary>
     /// This form is used to edit web service communicators of an application.

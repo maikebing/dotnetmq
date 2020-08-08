@@ -1,4 +1,4 @@
-﻿namespace MDS.Tools.ProxyGenerator
+﻿namespace DotNetMQ.Tools.ProxyGenerator
 {
     partial class ProxyGeneratorForm
     {

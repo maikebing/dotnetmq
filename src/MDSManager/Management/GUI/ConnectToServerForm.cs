@@ -26,12 +26,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using MDS.Communication;
-using MDS.GUI;
-using MDS.Utils;
+using DotNetMQ.Communication;
+using DotNetMQ.GUI;
+using DotNetMQ.Utils;
 using log4net;
 
-namespace MDS.Management.GUI
+namespace DotNetMQ.Management.GUI
 {
     /// <summary>
     /// This form is used to connect a MDS Server.

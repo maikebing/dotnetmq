@@ -29,12 +29,12 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using log4net;
-using MDS.Communication;
-using MDS.Communication.Messages.ControllerMessages;
-using MDS.Exceptions;
-using MDS.GUI;
+using DotNetMQ.Communication;
+using DotNetMQ.Communication.Messages.ControllerMessages;
+using DotNetMQ.Exceptions;
+using DotNetMQ.GUI;
 
-namespace MDS.Management.GUI.MDSServers
+namespace DotNetMQ.Management.GUI.MDSServers
 {
     /// <summary>
     /// This form is used to design Server graph of MDS.
