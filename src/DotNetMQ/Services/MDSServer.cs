@@ -77,13 +77,13 @@ namespace DotNetMQ
         /// <summary>
         /// Constructor.
         /// </summary>
-        public MDSServer()
+        public MDSServer(IStorageManager storage)
         {
             _settings = MDSSettings.Instance;
             _serverGraph = new MDSServerGraph();
             _clientApplicationList = new MDSClientApplicationList();
             _mdsManager = new MDSController("MDSController");
-            _storageManager = StorageManagerFactory.CreateStorageManager();
+            _storageManager = storage;
             _routingTable = new RoutingTable();
             _communicationLayer = new CommunicationLayer();
             _organizationLayer = new OrganizationLayer(_communicationLayer, _storageManager, _routingTable, _serverGraph, _clientApplicationList, _mdsManager);

@@ -1,6 +1,5 @@
 ﻿using DotNetMQ;
-
-using Microsoft.EntityFrameworkCore;
+using DotNetMQ.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,11 +18,14 @@ namespace DotNetMQ
     {
 
        
-        public static IHostBuilder ConfigureDotNetMQHost(this IHostBuilder hostBuilder)
+        public static IHostBuilder ConfigureDotNetMQHost(this IHostBuilder hostBuilder,Func<IStorageManager> func)
         {
             hostBuilder.ConfigureServices(services =>
             {
+                services.AddSingleton(func.Invoke());
+                 
                 services.AddHostedService<MDSServer>();
+           
             });
             return hostBuilder;
         }

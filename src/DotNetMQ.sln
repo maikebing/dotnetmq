@@ -5,30 +5,7 @@ VisualStudioVersion = 16.0.30330.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{A5C714B5-FAB7-4934-9761-71E0CE785B8F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{BC8AA727-4F74-4186-9018-95F4BA963DD0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Databases", "Databases", "{49BF0DB3-6E82-414C-BAAE-03094AF323F3}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{D94CC304-A7EC-43EC-BE0F-E0EEFE8683F0}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\Databases\MySQL\ReadMe.txt = Dependencies\Databases\MySQL\ReadMe.txt
-		Dependencies\Databases\MySQL\Tables.txt = Dependencies\Databases\MySQL\Tables.txt
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{764E147F-65EF-486E-B470-BD74E93048A0}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\Databases\SQLite\MDS.s3db = Dependencies\Databases\SQLite\MDS.s3db
-		Dependencies\Databases\SQLite\ReadMe.txt = Dependencies\Databases\SQLite\ReadMe.txt
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9F4A05C3-ADFD-411D-9151-FBA5463C8441}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MSSQL", "MSSQL", "{DFDDFE51-1B60-443B-888D-B4ACB3B0D0DB}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\Databases\MSSQL\DB-FILES.zip = Dependencies\Databases\MSSQL\DB-FILES.zip
-		Dependencies\Databases\MSSQL\ReadMe.txt = Dependencies\Databases\MSSQL\ReadMe.txt
-		Dependencies\Databases\MSSQL\Tables.txt = Dependencies\Databases\MSSQL\Tables.txt
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSManager", "MDSManager\MDSManager.csproj", "{FD323317-5B22-413C-8ADC-6701C2B7EB76}"
 EndProject
@@ -41,6 +18,18 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetMQ.Common", "DotNetMQ.Common\DotNetMQ.Common.csproj", "{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetMQ.Server", "DotNetMQ.Server\DotNetMQ.Server.csproj", "{F86434CF-EFC8-4A4C-B160-BF6F5F7CA870}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetMQ.SqliteStorage", "DotNetMQ.SqliteStorage\DotNetMQ.SqliteStorage.csproj", "{F7323C05-D05E-4F2A-B1A4-AAD4E9F0197E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{0797833F-EE14-402F-BA4F-A43983DE2F11}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetMQ.MySqlODBCStorage", "DotNetMQ.MySqlODBCStorage\DotNetMQ.MySqlODBCStorage.csproj", "{3EEB0460-0719-4428-9201-1225B68ECCE9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetMQ.MySqlDataStorage", "DotNetMQ.MySqlDataStorage\DotNetMQ.MySqlDataStorage.csproj", "{5E2D2776-831C-4788-A105-1C50D2EB00DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetMQ.MsSqlStorage", "DotNetMQ.MsSqlStorage\DotNetMQ.MsSqlStorage.csproj", "{088A1CFB-4A34-41F9-9957-27624AD5373F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetMQ.MySqlConnectorStorage", "DotNetMQ.MySqlConnectorStorage\DotNetMQ.MySqlConnectorStorage.csproj", "{FEF5EBD3-E9A2-45F3-972E-3C595951C929}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,17 +61,38 @@ Global
 		{F86434CF-EFC8-4A4C-B160-BF6F5F7CA870}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F86434CF-EFC8-4A4C-B160-BF6F5F7CA870}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F86434CF-EFC8-4A4C-B160-BF6F5F7CA870}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7323C05-D05E-4F2A-B1A4-AAD4E9F0197E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7323C05-D05E-4F2A-B1A4-AAD4E9F0197E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7323C05-D05E-4F2A-B1A4-AAD4E9F0197E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7323C05-D05E-4F2A-B1A4-AAD4E9F0197E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EEB0460-0719-4428-9201-1225B68ECCE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EEB0460-0719-4428-9201-1225B68ECCE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EEB0460-0719-4428-9201-1225B68ECCE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EEB0460-0719-4428-9201-1225B68ECCE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E2D2776-831C-4788-A105-1C50D2EB00DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E2D2776-831C-4788-A105-1C50D2EB00DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E2D2776-831C-4788-A105-1C50D2EB00DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E2D2776-831C-4788-A105-1C50D2EB00DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{088A1CFB-4A34-41F9-9957-27624AD5373F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{088A1CFB-4A34-41F9-9957-27624AD5373F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{088A1CFB-4A34-41F9-9957-27624AD5373F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{088A1CFB-4A34-41F9-9957-27624AD5373F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEF5EBD3-E9A2-45F3-972E-3C595951C929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEF5EBD3-E9A2-45F3-972E-3C595951C929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEF5EBD3-E9A2-45F3-972E-3C595951C929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEF5EBD3-E9A2-45F3-972E-3C595951C929}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{49BF0DB3-6E82-414C-BAAE-03094AF323F3} = {BC8AA727-4F74-4186-9018-95F4BA963DD0}
-		{D94CC304-A7EC-43EC-BE0F-E0EEFE8683F0} = {49BF0DB3-6E82-414C-BAAE-03094AF323F3}
-		{764E147F-65EF-486E-B470-BD74E93048A0} = {49BF0DB3-6E82-414C-BAAE-03094AF323F3}
-		{DFDDFE51-1B60-443B-888D-B4ACB3B0D0DB} = {49BF0DB3-6E82-414C-BAAE-03094AF323F3}
 		{B49D18FF-DD77-46A4-880A-F0B9598C6070} = {A5C714B5-FAB7-4934-9761-71E0CE785B8F}
 		{4B4B3551-78B8-4CE2-BD0A-98E8EC496E80} = {9F4A05C3-ADFD-411D-9151-FBA5463C8441}
+		{F7323C05-D05E-4F2A-B1A4-AAD4E9F0197E} = {0797833F-EE14-402F-BA4F-A43983DE2F11}
+		{3EEB0460-0719-4428-9201-1225B68ECCE9} = {0797833F-EE14-402F-BA4F-A43983DE2F11}
+		{5E2D2776-831C-4788-A105-1C50D2EB00DC} = {0797833F-EE14-402F-BA4F-A43983DE2F11}
+		{088A1CFB-4A34-41F9-9957-27624AD5373F} = {0797833F-EE14-402F-BA4F-A43983DE2F11}
+		{FEF5EBD3-E9A2-45F3-972E-3C595951C929} = {0797833F-EE14-402F-BA4F-A43983DE2F11}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F547F1B2-4D87-40F4-ADC9-B709BFB1947A}

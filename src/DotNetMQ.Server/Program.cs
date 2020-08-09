@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DotNetMQ.Storage;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Hosting;
 using Silkier.AspNetCore;
 
@@ -25,7 +27,8 @@ namespace DotNetMQ
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .ConfigureDotNetMQHost();
+                .ConfigureDotNetMQHost( ()=> StorageManagerFactory.CreateStorageManager());
+                 
         
 
     }

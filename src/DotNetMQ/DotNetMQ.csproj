@@ -37,21 +37,11 @@
    
  
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.6" />
- 
-    <PackageReference Include="MySql.Data" Version="8.0.21" />
-    
-  
-    <PackageReference Include="Silkier" Version="1.0.121" />
-    <PackageReference Include="Silkier.EFCore" Version="1.0.121" />
-    <PackageReference Include="System.Data.Odbc" Version="4.7.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
     
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.6" />
  
   </ItemGroup>
   <ItemGroup>
@@ -77,5 +67,8 @@
     <None Update="MDSSettings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetMQ.Common\DotNetMQ.Common.csproj" />
+    <ProjectReference Include="..\DotNetMQ.SqliteStorage\DotNetMQ.SqliteStorage.csproj" />
     <ProjectReference Include="..\DotNetMQ\DotNetMQ.csproj" />
   </ItemGroup>
 </Project>

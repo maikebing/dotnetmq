@@ -2,8 +2,8 @@
 using DotNetMQ.Storage.MemoryStorage;
 using DotNetMQ.Storage.MsSqlStorage;
 using DotNetMQ.Storage.MySqlStorage;
-using DotNetMQ.Storage.SQLiteStorage;
 using DotNetMQ.Settings;
+using DotNetMQ.Storage.SQLiteStorage;
 
 namespace DotNetMQ.Storage
 {

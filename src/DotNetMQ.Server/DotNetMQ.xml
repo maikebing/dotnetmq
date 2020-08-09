@@ -37,5 +37,11 @@
               查找类似 The certificate is installed 的本地化字符串。
             </summary>
         </member>
+        <member name="M:DotNetMQ.Storage.StorageManagerFactory.CreateStorageManager">
+            <summary>
+            Creates Storage Manager according to StorageType value in Settings file.
+            </summary>
+            <returns>Storame Manager</returns>
+        </member>
     </members>
 </doc>
