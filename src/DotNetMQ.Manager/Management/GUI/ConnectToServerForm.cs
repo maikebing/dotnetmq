@@ -26,9 +26,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using DotNetMQ.Communication;
 using DotNetMQ.GUI;
-using DotNetMQ.Utils;
+using DotNetMQ.Manager.Properties;
 using log4net;
 
 namespace DotNetMQ.Management.GUI
@@ -74,8 +73,8 @@ namespace DotNetMQ.Management.GUI
         {
             try
             {
-                txtIPAddress.Text = MDS.Properties.Settings.Default.LastConnectedIPAddress;
-                txtPort.Text = MDS.Properties.Settings.Default.LastConnectedTCPPort.ToString();
+                txtIPAddress.Text =  Settings.Default.LastConnectedIPAddress;
+                txtPort.Text =  Settings.Default.LastConnectedTCPPort.ToString();
             }
             catch (Exception ex)
             {
@@ -89,9 +88,9 @@ namespace DotNetMQ.Management.GUI
             {
                 var port = Convert.ToInt32(txtPort.Text);
                 MDSController = new MDSController(txtIPAddress.Text, port);
-                MDS.Properties.Settings.Default.LastConnectedIPAddress= txtIPAddress.Text;
-                MDS.Properties.Settings.Default.LastConnectedTCPPort = port;
-                MDS.Properties.Settings.Default.Save();
+                Settings.Default.LastConnectedIPAddress= txtIPAddress.Text;
+                Settings.Default.LastConnectedTCPPort = port;
+                Settings.Default.Save();
                 Close();
             }
             catch

@@ -32,7 +32,7 @@ namespace DotNetMQ.Management.GUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
             var connectToServerForm = new ConnectToServerForm();
             Application.Run(connectToServerForm);
             if (connectToServerForm.MDSController != null)
