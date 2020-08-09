@@ -10,6 +10,7 @@
 		<Product>DotNetMQ</Product>
 		<Authors>SESTEK A.Ş.</Authors>
 		<Version>1.0.1</Version>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -28,6 +29,10 @@
 	  <None Update="Properties\Settings.settings">
 	    <Generator>SettingsSingleFileGenerator</Generator>
 	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+	  </None>
+	  <None Include="..\..\LICENSE">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
 	  </None>
 	</ItemGroup>
 
