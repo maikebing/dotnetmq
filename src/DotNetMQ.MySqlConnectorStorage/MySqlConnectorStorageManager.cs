@@ -30,7 +30,7 @@ namespace DotNetMQ.Storage.MySqlConnectorStorage
     /// <summary>
     /// This class is used to perform database operations on MySQL database engine using MySQL .Net Provider.
     /// </summary>
-    public class MySqlNetStorageManager : IStorageManager
+    public class MySqlConnectorStorageManager : IStorageManager
     {
         #region Private fields
 

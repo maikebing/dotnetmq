@@ -10,15 +10,14 @@
     <PackageProjectUrl>https://github.com/maikebing/DotNetMQ</PackageProjectUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
     <RepositoryUrl>https://github.com/maikebing/DotNetMQ</RepositoryUrl>
-    <PackageReleaseNotes>A Complete Message Queue System for .NET</PackageReleaseNotes>
+    <PackageReleaseNotes>Open-source IoT Platform - Device management, data collection, processing and visualization.   https://www.DotNetMQ.net</PackageReleaseNotes>
     <Description>A Complete Message Queue System for .NET</Description>
     <PackageId>DotNetMQ.Server</PackageId>
     <UserSecretsId>18970590-05bf-4a1f-a70b-3c8a120d12cb</UserSecretsId>
     <Version>1.0.1</Version>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>dotnetmq;mq;Message Queue</PackageTags>
+    <PackageTags>IoT</PackageTags>
     <PackageIcon>https:\avatars2.githubusercontent.com\u\200x200.png</PackageIcon>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     
   </PropertyGroup>
 
@@ -74,10 +73,6 @@
     <EmbeddedResource Remove="Migrations\**" />
     <None Remove="Migrations\**" />
     <None Remove=".gitignore" />
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   
   </ItemGroup>
   <ItemGroup>

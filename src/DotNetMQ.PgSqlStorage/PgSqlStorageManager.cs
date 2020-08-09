@@ -20,9 +20,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 using System;
 using System.Collections.Generic;
 using System.Data;
-using MDS.Communication.Messages;
-using MDS.Exceptions;
-using MDS.Serialization;
+using DotNetMQ.Communication.Messages;
+using DotNetMQ.Serialization;
+using DotNetMQ.Storage;
+
 using Npgsql;
 
 namespace MDS.Storage.PgSqlStorage

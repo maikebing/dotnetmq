@@ -1,11 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net40;net472</TargetFrameworks>
+	  <Company>DotNetMQ</Company>
+	  <Product>DotNetMQ</Product>
+	  <Authors>MaiKeBing</Authors>
+	  <PackageProjectUrl>https://github.com/maikebing/DotNetMQ</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/maikebing/DotNetMQ</RepositoryUrl>
+	  <PackageReleaseNotes>
+		  A Complete Message Queue System for .NET
+		  Copyright 2011-2014 Halil ibrahim KALKAN
+		  Copyright 2020 Maikebing
+	  </PackageReleaseNotes>
+	  <Description>A Complete Message Queue System for .NET</Description>
+	  <PackageId>DotNetMQ.Common</PackageId>
+	  <Version>1.0.1</Version>
+	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
+	  <RepositoryType>git</RepositoryType>
+	  <PackageTags>dotnetmq</PackageTags>
+	  <Copyright>Copyright 2011-2014 Halil ibrahim KALKAN  Maikebing</Copyright>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Client\AppService\README.txt" />
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

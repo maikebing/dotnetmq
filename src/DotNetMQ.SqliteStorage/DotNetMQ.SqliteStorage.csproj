@@ -2,11 +2,34 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	  <Company>DotNetMQ</Company>
+	  <Product>DotNetMQ</Product>
+	  <Authors>MaiKeBing</Authors>
+	  <PackageProjectUrl>https://github.com/maikebing/DotNetMQ</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/maikebing/DotNetMQ</RepositoryUrl>
+	  <PackageReleaseNotes>
+		  A Complete Message Queue System for .NET
+		  Copyright 2011-2014 Halil ibrahim KALKAN
+		  Copyright 2020 Maikebing
+	  </PackageReleaseNotes>
+	  <Description>A Complete Message Queue System for .NET</Description>
+	  <PackageId>DotNetMQ.SqliteStorage</PackageId>
+	  <Version>1.0.1</Version>
+	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
+	  <RepositoryType>git</RepositoryType>
+	  <PackageTags>dotnetmq</PackageTags>
+	  <Copyright>Copyright 2011-2014 Halil ibrahim KALKAN  Maikebing</Copyright>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
 	  <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
     <ProjectReference Include="..\DotNetMQ\DotNetMQ.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 </Project>

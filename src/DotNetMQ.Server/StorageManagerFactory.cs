@@ -4,6 +4,8 @@ using DotNetMQ.Storage.MsSqlStorage;
 using DotNetMQ.Storage.MySqlStorage;
 using DotNetMQ.Settings;
 using DotNetMQ.Storage.SQLiteStorage;
+using MDS.Storage.PgSqlStorage;
+using DotNetMQ.Storage.MySqlConnectorStorage;
 
 namespace DotNetMQ.Storage
 {
@@ -29,6 +31,10 @@ namespace DotNetMQ.Storage
             {
                 storageManager = new MySqlNetStorageManager { ConnectionString = settings["ConnectionString"] };
             }
+            else if (storageType.Equals("MySqlConnector", StringComparison.OrdinalIgnoreCase))
+            {
+                storageManager = new   MySqlConnectorStorageManager()  { ConnectionString = settings["ConnectionString"] };
+            }
             else if (storageType.Equals("MSSQL", StringComparison.OrdinalIgnoreCase))
             {
                 storageManager = new MsSqlStorageManager { ConnectionString = settings["ConnectionString"] };
@@ -36,6 +42,10 @@ namespace DotNetMQ.Storage
             else if (storageType.Equals("SQLite", StringComparison.OrdinalIgnoreCase))
             {
                 storageManager = new SqliteStorageManager();
+            }
+            else if (storageType.Equals("PgSQL", StringComparison.OrdinalIgnoreCase))
+            {
+                storageManager = new PgSqlStorageManager() { ConnectionString = settings["ConnectionString"] };
             }
             else //Default storage manager
             {

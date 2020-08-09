@@ -1,6 +1,8 @@
 ﻿using DotNetMQ;
 using System;
 using DotNetMQ.Threading;
+using DotNetMQ.Storage;
+
 namespace ServerTest
 {
     class Program
@@ -9,7 +11,7 @@ namespace ServerTest
         {
             try
             {
-                var server = new MDSServer();
+                var server = new MDSServer(StorageManagerFactory.CreateStorageManager());
                 server.Start();
 
                 Console.WriteLine("DotNetMQ server has started.");

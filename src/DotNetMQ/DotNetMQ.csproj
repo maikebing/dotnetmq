@@ -1,74 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-	<TargetFramework>netstandard2.0</TargetFramework>
-    <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
-    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
-    <Company>DotNetMQ</Company>
-    <Product>DotNetMQ</Product>
-    <Authors>MaiKeBing</Authors>
-    <PackageProjectUrl>https://github.com/maikebing/DotNetMQ</PackageProjectUrl>
-    <PackageLicenseUrl></PackageLicenseUrl>
-    <RepositoryUrl>https://github.com/maikebing/DotNetMQ</RepositoryUrl>
-    <PackageReleaseNotes>Open-source IoT Platform - Device management, data collection, processing and visualization.   https://www.DotNetMQ.net</PackageReleaseNotes>
-    <Description>Open-source IoT Platform - Device management, data collection, processing and visualization.</Description>
-    <PackageId>DotNetMQ</PackageId>
-    <UserSecretsId>18970590-05bf-4a1f-a70b-3c8a120d12cb</UserSecretsId>
-    <Version>1.0.1</Version>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>IoT</PackageTags>
-    <PackageIcon>https:\avatars2.githubusercontent.com\u\200x200.png</PackageIcon>
-    <ApplicationIcon></ApplicationIcon>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <PackageIconUrl />
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-  </PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Company>DotNetMQ</Company>
+		<Product>DotNetMQ</Product>
+		<Authors>MaiKeBing</Authors>
+		<PackageProjectUrl>https://github.com/maikebing/DotNetMQ</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/maikebing/DotNetMQ</RepositoryUrl>
+		<PackageReleaseNotes>
+			A Complete Message Queue System for .NET
+			Copyright 2011-2014 Halil ibrahim KALKAN
+			Copyright 2020 Maikebing
+		</PackageReleaseNotes>
+		<Description>A Complete Message Queue System for .NET</Description>
+		<PackageId>DotNetMQ</PackageId>
+		<Version>1.0.1</Version>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>dotnetmq</PackageTags>
+		<Copyright>Copyright 2011-2014 Halil ibrahim KALKAN  Maikebing</Copyright>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <DocumentationFile>DotNetMQ.xml</DocumentationFile>
-    <NoWarn>1701;1702;1591</NoWarn>
-  </PropertyGroup>
-  <ItemGroup>
- 
-    <PackageReference Include="log4net" Version="2.0.8" />
-    
-   
- 
-    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.6" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
-    
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
- 
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Communication\WebServiceCommunication\**" />
-    <Compile Remove="Migrations\**" />
-    <Content Remove="Communication\WebServiceCommunication\**" />
-    <Content Remove="Migrations\**" />
-    <EmbeddedResource Remove="Communication\WebServiceCommunication\**" />
-    <EmbeddedResource Remove="Migrations\**" />
-    <None Remove="Communication\WebServiceCommunication\**" />
-    <None Remove="Migrations\**" />
-    <None Remove=".gitignore" />
-    <None Remove="healthchecksdb" />
-    <None Remove="healthchecksdb-shm" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DotNetMQ.Common\DotNetMQ.Common.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="MDSSettings.design.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="MDSSettings.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+		<DocumentationFile>DotNetMQ.xml</DocumentationFile>
+		<NoWarn>1701;1702;1591</NoWarn>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="log4net" Version="2.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="3.1.6" />
+		<PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Communication\WebServiceCommunication\**" />
+		<Compile Remove="Migrations\**" />
+		<Content Remove="Communication\WebServiceCommunication\**" />
+		<Content Remove="Migrations\**" />
+		<EmbeddedResource Remove="Communication\WebServiceCommunication\**" />
+		<EmbeddedResource Remove="Migrations\**" />
+		<None Remove="Communication\WebServiceCommunication\**" />
+		<None Remove="Migrations\**" />
+		<None Remove=".gitignore" />
+		<None Remove="healthchecksdb" />
+		<None Remove="healthchecksdb-shm" />
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DotNetMQ.Common\DotNetMQ.Common.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="MDSSettings.design.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="MDSSettings.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Properties\" />
+	</ItemGroup>
 </Project>

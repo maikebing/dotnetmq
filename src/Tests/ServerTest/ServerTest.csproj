@@ -6,8 +6,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\DotNetMQ.Common\DotNetMQ.Common.csproj" />
-	  <ProjectReference Include="..\..\DotNetMQ\DotNetMQ.csproj" />
+	  <Compile Include="..\..\DotNetMQ.Server\StorageManagerFactory.cs" Link="StorageManagerFactory.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\DotNetMQ.MsSqlStorage\DotNetMQ.MsSqlStorage.csproj" />
+	  <ProjectReference Include="..\..\DotNetMQ.MySqlConnectorStorage\DotNetMQ.MySqlConnectorStorage.csproj" />
+	  <ProjectReference Include="..\..\DotNetMQ.MySqlDataStorage\DotNetMQ.MySqlDataStorage.csproj" />
+	  <ProjectReference Include="..\..\DotNetMQ.MySqlODBCStorage\DotNetMQ.MySqlODBCStorage.csproj" />
+	  <ProjectReference Include="..\..\DotNetMQ.PgSqlStorage\DotNetMQ.PgSqlStorage.csproj" />
+	  <ProjectReference Include="..\..\DotNetMQ.SqliteStorage\DotNetMQ.SqliteStorage.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
