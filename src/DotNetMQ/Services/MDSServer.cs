@@ -22,6 +22,7 @@ using DotNetMQ.Organization;
 using DotNetMQ.Organization.Routing;
 using DotNetMQ.Settings;
 using DotNetMQ.Storage;
+using DotNetMQ.Threading;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace DotNetMQ
     /// <summary>
     /// Represents a MDS server. This is the main class to construct and run a MDS server.
     /// </summary>
-    public class MDSServer : IHostedService
+    public class MDSServer : IHostedService, IRunnable
     {
         /// <summary>
         /// Settings.
@@ -92,34 +93,38 @@ namespace DotNetMQ
         /// <summary>
         /// Starts the MDS server.
         /// </summary>
-        public Task StartAsync(CancellationToken cancellationToken)
+        public void Start()
         {
-            return Task.Run(() =>
-           {
-   _storageManager.Start();
+            _storageManager.Start();
             CorrectDatabase();
             _communicationLayer.Start();
             _organizationLayer.Start();
-           });
-         
         }
 
+        /// <summary>
+        /// Starts the MDS server.
+        /// </summary>
+        public Task StartAsync(CancellationToken cancellationToken)
+                => Task.Run(Start);
 
+        /// <summary>
+        /// Stops the MDS server.
+        /// </summary>
+        /// <param name="waitToStop">True, if caller thread must be blocked until MDS server stops.</param>
+        public void Stop(bool waitToStop)
+        {
+            _communicationLayer.Stop(waitToStop);
+            _organizationLayer.Stop(waitToStop);
+            _storageManager.Stop(waitToStop);
+        }
 
         /// <summary>
         /// Stops the MDS server.
         /// </summary>
         /// <param name="cancellationToken">True, if caller thread must be blocked until MDS server stops.</param>
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.Run(() =>
-            {
-                _communicationLayer.Stop(cancellationToken.IsCancellationRequested);
-                _organizationLayer.Stop(cancellationToken.IsCancellationRequested);
-                _storageManager.Stop(cancellationToken.IsCancellationRequested);
-            });
-        }
-         
+        public Task StopAsync(CancellationToken cancellationToken) =>
+                Task.Run(() =>
+                        Stop(cancellationToken.IsCancellationRequested));
 
         /// <summary>
         /// Waits stopping of MDS server.
@@ -141,7 +146,7 @@ namespace DotNetMQ
                 return;
             }
 
-            //If Server graph is changed, records in storage engine (database) may be wrong, therefore, they must be updated 
+            //If Server graph is changed, records in storage engine (database) may be wrong, therefore, they must be updated
             var nextServersList = _serverGraph.GetNextServersForDestServers();
             foreach (var nextServerItem in nextServersList)
             {

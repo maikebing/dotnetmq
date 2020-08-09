@@ -9,14 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencie
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Databases", "Databases", "{49BF0DB3-6E82-414C-BAAE-03094AF323F3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{05F27B70-CF54-4DFF-B6EB-C86D4352ACE1}"
-	ProjectSection(SolutionItems) = preProject
-		Dependencies\Libraries\log4net.dll = Dependencies\Libraries\log4net.dll
-		Dependencies\Libraries\log4net.xml = Dependencies\Libraries\log4net.xml
-		Dependencies\Libraries\MySql.Data.dll = Dependencies\Libraries\MySql.Data.dll
-		Dependencies\Libraries\System.Data.SQLite.dll = Dependencies\Libraries\System.Data.SQLite.dll
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{D94CC304-A7EC-43EC-BE0F-E0EEFE8683F0}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\Databases\MySQL\ReadMe.txt = Dependencies\Databases\MySQL\ReadMe.txt
@@ -44,9 +36,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDSServiceProxyGenerator", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerTest", "Tests\ServerTest\ServerTest.csproj", "{4B4B3551-78B8-4CE2-BD0A-98E8EC496E80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetMQ", "DotNetMQ\DotNetMQ.csproj", "{1FAA16CD-D910-410D-BFFF-7E66628DD24C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetMQ", "DotNetMQ\DotNetMQ.csproj", "{1FAA16CD-D910-410D-BFFF-7E66628DD24C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetMQ.Common", "DotNetMQ.Common\DotNetMQ.Common.csproj", "{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetMQ.Common", "DotNetMQ.Common\DotNetMQ.Common.csproj", "{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetMQ.Server", "DotNetMQ.Server\DotNetMQ.Server.csproj", "{F86434CF-EFC8-4A4C-B160-BF6F5F7CA870}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,13 +68,16 @@ Global
 		{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD06268B-A0B9-42DF-8860-BF4FC26FF5DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F86434CF-EFC8-4A4C-B160-BF6F5F7CA870}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F86434CF-EFC8-4A4C-B160-BF6F5F7CA870}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F86434CF-EFC8-4A4C-B160-BF6F5F7CA870}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F86434CF-EFC8-4A4C-B160-BF6F5F7CA870}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{49BF0DB3-6E82-414C-BAAE-03094AF323F3} = {BC8AA727-4F74-4186-9018-95F4BA963DD0}
-		{05F27B70-CF54-4DFF-B6EB-C86D4352ACE1} = {BC8AA727-4F74-4186-9018-95F4BA963DD0}
 		{D94CC304-A7EC-43EC-BE0F-E0EEFE8683F0} = {49BF0DB3-6E82-414C-BAAE-03094AF323F3}
 		{764E147F-65EF-486E-B470-BD74E93048A0} = {49BF0DB3-6E82-414C-BAAE-03094AF323F3}
 		{DFDDFE51-1B60-443B-888D-B4ACB3B0D0DB} = {49BF0DB3-6E82-414C-BAAE-03094AF323F3}

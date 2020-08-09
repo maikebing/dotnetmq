@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-	<TargetFramework>netstandard2.0</TargetFramework>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
     <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
     <Company>DotNetMQ</Company>
@@ -12,14 +12,14 @@
     <RepositoryUrl>https://github.com/maikebing/DotNetMQ</RepositoryUrl>
     <PackageReleaseNotes>Open-source IoT Platform - Device management, data collection, processing and visualization.   https://www.DotNetMQ.net</PackageReleaseNotes>
     <Description>Open-source IoT Platform - Device management, data collection, processing and visualization.</Description>
-    <PackageId>DotNetMQ</PackageId>
+    <PackageId>DotNetMQ.Server</PackageId>
     <UserSecretsId>18970590-05bf-4a1f-a70b-3c8a120d12cb</UserSecretsId>
     <Version>1.0.1</Version>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <PackageTags>IoT</PackageTags>
     <PackageIcon>https:\avatars2.githubusercontent.com\u\200x200.png</PackageIcon>
-    <ApplicationIcon></ApplicationIcon>
+    <ApplicationIcon>Resources\Logo.ico</ApplicationIcon>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <PackageIconUrl />
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
@@ -31,44 +31,54 @@
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
- 
+
+    <PackageReference Include="AspNetCore.HealthChecks.Network" Version="3.1.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="3.1.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.System" Version="3.1.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="3.1.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="3.1.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.PostgreSQL.Storage" Version="3.1.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="3.1.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.Network" Version="3.1.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="3.1.1" />
     <PackageReference Include="log4net" Version="2.0.8" />
     
    
- 
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.6" />
- 
-    <PackageReference Include="MySql.Data" Version="8.0.21" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     
-  
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.7.0" />
     <PackageReference Include="Silkier" Version="1.0.121" />
+    <PackageReference Include="Silkier.AspNetCore" Version="1.0.121" />
     <PackageReference Include="Silkier.EFCore" Version="1.0.121" />
-    <PackageReference Include="System.Data.Odbc" Version="4.7.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.7.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
-    
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.6" />
  
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Communication\WebServiceCommunication\**" />
     <Compile Remove="Migrations\**" />
-    <Content Remove="Communication\WebServiceCommunication\**" />
     <Content Remove="Migrations\**" />
-    <EmbeddedResource Remove="Communication\WebServiceCommunication\**" />
     <EmbeddedResource Remove="Migrations\**" />
-    <None Remove="Communication\WebServiceCommunication\**" />
     <None Remove="Migrations\**" />
     <None Remove=".gitignore" />
     <None Remove="healthchecksdb" />
     <None Remove="healthchecksdb-shm" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DotNetMQ.Common\DotNetMQ.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="MDSSettings.design.xml">
@@ -77,5 +87,12 @@
     <None Update="MDSSettings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetMQ.Common\DotNetMQ.Common.csproj" />
+    <ProjectReference Include="..\DotNetMQ\DotNetMQ.csproj" />
   </ItemGroup>
 </Project>

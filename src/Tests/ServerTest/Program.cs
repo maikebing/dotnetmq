@@ -1,6 +1,6 @@
-﻿using System;
-using MDS;
-
+﻿using DotNetMQ;
+using System;
+using DotNetMQ.Threading;
 namespace ServerTest
 {
     class Program

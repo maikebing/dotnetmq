@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DotNetMQ.Properties {
+namespace MDS.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -20,6 +20,30 @@ namespace DotNetMQ.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        public string LastConnectedIPAddress {
+            get {
+                return ((string)(this["LastConnectedIPAddress"]));
+            }
+            set {
+                this["LastConnectedIPAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10905")]
+        public int LastConnectedTCPPort {
+            get {
+                return ((int)(this["LastConnectedTCPPort"]));
+            }
+            set {
+                this["LastConnectedTCPPort"] = value;
             }
         }
     }

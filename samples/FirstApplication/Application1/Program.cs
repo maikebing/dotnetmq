@@ -16,7 +16,6 @@ namespace Application1
             mdsClient.Connect();
 
             Console.WriteLine("Write a text and press enter to send to Application2. Write 'exit' to stop application.");
-
             while (true)
             {
                 //Get a message from user

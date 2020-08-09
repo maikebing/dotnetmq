@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DotNetMQ.Properties {
+namespace MDS.Properties {
     using System;
     
     

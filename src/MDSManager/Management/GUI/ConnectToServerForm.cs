@@ -48,17 +48,14 @@ namespace DotNetMQ.Management.GUI
         /// </summary>
         public MDSController MDSController { get; private set; }
 
-        /// <summary>
-        /// This object is used to perform registry operations.
-        /// </summary>
-        private readonly RegistrySettings _settings;
+     
 
         /// <summary>
         /// Constructor.
         /// </summary>
         public ConnectToServerForm()
         {
-            _settings = new RegistrySettings(@"Software\MDS\MDSManager");
+         
             InitializeComponent();
             PrepareForm();
         }
@@ -77,8 +74,8 @@ namespace DotNetMQ.Management.GUI
         {
             try
             {
-                txtIPAddress.Text = _settings.GetStringValue("LastConnectedIPAddress", "127.0.0.1");
-                txtPort.Text = _settings.GetIntegerValue("LastConnectedTCPPort", CommunicationConsts.DefaultMDSPort).ToString();
+                txtIPAddress.Text = MDS.Properties.Settings.Default.LastConnectedIPAddress;
+                txtPort.Text = MDS.Properties.Settings.Default.LastConnectedTCPPort.ToString();
             }
             catch (Exception ex)
             {
@@ -92,8 +89,9 @@ namespace DotNetMQ.Management.GUI
             {
                 var port = Convert.ToInt32(txtPort.Text);
                 MDSController = new MDSController(txtIPAddress.Text, port);
-                _settings.SetStringValue("LastConnectedIPAddress", txtIPAddress.Text);
-                _settings.SetIntegerValue("LastConnectedTCPPort", port);
+                MDS.Properties.Settings.Default.LastConnectedIPAddress= txtIPAddress.Text;
+                MDS.Properties.Settings.Default.LastConnectedTCPPort = port;
+                MDS.Properties.Settings.Default.Save();
                 Close();
             }
             catch

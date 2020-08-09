@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Silkier.AspNetCore;
-using SilkierQuartz;
 
 namespace DotNetMQ
 {
@@ -26,7 +25,6 @@ namespace DotNetMQ
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-               .ConfigureSilkierQuartzHost()
                 .ConfigureDotNetMQHost();
         
 

@@ -62,7 +62,7 @@ namespace DotNetMQ.Storage.SQLiteStorage
         {
             var csb = new SQLiteConnectionStringBuilder
             {
-                DataSource = Path.Combine(GeneralHelper.GetCurrentDirectory(), @"SqliteDB\MDS.s3db"),
+                DataSource = Path.Combine(GeneralHelper.GetCurrentDirectory(), "dotnetmq.db"),
                 Version = 3,
                 Pooling = true,
                 ReadOnly = false,

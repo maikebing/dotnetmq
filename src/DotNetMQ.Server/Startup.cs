@@ -1,5 +1,4 @@
 ﻿using DotNetMQ.Data;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -16,9 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
- 
 using NSwag.AspNetCore;
-using Quartz;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -29,7 +26,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.ComTypes;
 using SshNet.Security.Cryptography;
-using SilkierQuartz;
 using HealthChecks.UI.Client;
 using NSwag;
 using NSwag.Generation.Processors.Security;
@@ -131,7 +127,6 @@ namespace DotNetMQ
 
                  }, name: "Disk Storage");
             services.AddHealthChecksUI().AddPostgreSqlStorage(Configuration.GetConnectionString("DotNetMQ"));
-            services.AddSilkierQuartz();
           
             services.AddMemoryCache();
         
@@ -139,7 +134,7 @@ namespace DotNetMQ
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISchedulerFactory factory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -164,19 +159,10 @@ namespace DotNetMQ
             app.UseAuthorization();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseSilkierQuartz(new  SilkierQuartzOptions()
-            {
-                Scheduler = factory.GetScheduler().Result,
-                VirtualPathRoot = "/quartzmin",
-                ProductName = "DotNetMQ",
-                DefaultDateFormat = "yyyy-MM-dd",
-                DefaultTimeFormat = "HH:mm:ss",
-                UseLocalTime = true
-            });
+         
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            //   endpoints.MapMqtt("/mqtt");
             });
             app.UseSwaggerUi3();
             app.UseOpenApi();

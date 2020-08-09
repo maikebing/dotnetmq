@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>DotNetMQ</name>
+        <name>DotNetMQ.Server</name>
     </assembly>
     <members>
         <member name="M:DotNetMQ.Controllers.AccountController.Register(DotNetMQ.Dtos.RegisterDto)">
